@@ -94,6 +94,17 @@
     switch (self.optIndex) {
     case JUB_NS_ENUM_OPT::TRANSACTION:
     {
+//        JUB_RV JUB_GetDeviceType(IN JUB_UINT16 deviceID,
+//        OUT JUB_ENUM_COMMODE_PTR commode, OUT JUB_ENUM_DEVICE_PTR deviceClass);
+
+        JUB_ENUM_COMMODE comMode = JUB_ENUM_COMMODE::COMMODE_NS_ITEM;
+        JUB_ENUM_DEVICE deviceClass = JUB_ENUM_DEVICE::DEVICE_NS_ITEM;
+        JUB_RV rv = JUB_GetDeviceType([[[JUBSharedData sharedInstance] currDeviceID] intValue], &comMode, &deviceClass);
+        if (JUBR_OK != rv) {
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceType() return 0x%2lx.]", rv]];
+        }
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceType() OK.]"]];
+        
         switch (self.selectedTransmitTypeIndex) {
         case JUB_NS_ENUM_DEV_TYPE::SEG_NFC:
         {
@@ -108,7 +119,15 @@
         case JUB_NS_ENUM_DEV_TYPE::SEG_BLE:
         {
             JUBSharedData *data = [JUBSharedData sharedInstance];
-            [data setVerifyMode:JUB_NS_ENUM_VERIFY_MODE::VKPIN];
+            switch (deviceClass) {
+            case JUB_ENUM_DEVICE::BIO:
+                [data setVerifyMode:JUB_NS_ENUM_VERIFY_MODE::FGPT];
+                break;
+            case JUB_ENUM_DEVICE::BLD:
+            default:
+                [data setVerifyMode:JUB_NS_ENUM_VERIFY_MODE::VKPIN];
+                break;
+            }
             [self beginBLESession];
             break;
         }
@@ -194,6 +213,21 @@
         [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN() return 0x%2lx.]", rv]];
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN() OK.]"]];
+    
+    return rv;
+}
+
+
+- (JUB_RV)verify_fgpt:(JUB_UINT16)contextID {
+    
+    JUB_RV rv = JUBR_ERROR;
+    
+    JUB_ULONG retry = 0;
+    rv = JUB_VerifyFingerprint(contextID, &retry);
+    if (JUBR_OK != rv) {
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyFingerprint() return 0x%2lx.]", rv]];
+    }
+    [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyFingerprint() OK.]"]];
     
     return rv;
 }

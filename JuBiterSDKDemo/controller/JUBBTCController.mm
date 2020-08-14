@@ -295,7 +295,7 @@
                               root:root];
             break;
         }
-        }
+        }   // switch((JUB_NS_ENUM_BTC_COINTYPE)self.optCoinType) end
         break;
     }
     case JUB_NS_ENUM_OPT::GET_ADDRESS:
@@ -450,6 +450,53 @@
     
     JUBSharedData *data = [JUBSharedData sharedInstance];
     switch (data.verifyMode) {
+    case JUB_NS_ENUM_VERIFY_MODE::FGPT:
+    {
+        [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
+            
+//            rv = [self show_virtualKeyboard:contextID];
+//            if (JUBR_OK != rv) {
+//                return;
+//            }
+            
+            [data setUserPin:pin];
+            
+            JUB_RV rv = [self verify_pin:contextID];
+            if (JUBR_OK != rv) {
+                return;
+            }
+            
+            rv = [self set_unit_test:contextID];
+            if (JUBR_OK != rv) {
+                return;
+            }
+            
+            rv = [self transaction_proc:contextID
+                                   root:root];
+            if (JUBR_OK != rv) {
+                return;
+            }
+        }
+                      fingerprintsCallBack:^() {
+            JUB_RV rv = [self verify_fgpt:contextID];
+            if (JUBR_OK != rv) {
+                return;
+            }
+            
+            rv = [self set_unit_test:contextID];
+            if (JUBR_OK != rv) {
+                return;
+            }
+            
+            rv = [self transaction_proc:contextID
+                                   root:root];
+            if (JUBR_OK != rv) {
+                return;
+            }
+        }];
+        
+        break;
+    }   // case JUB_NS_ENUM_VERIFY_MODE::FGPT end
     case JUB_NS_ENUM_VERIFY_MODE::VKPIN:
     {
         rv = [self show_virtualKeyboard:contextID];
@@ -458,7 +505,6 @@
         }
         
         [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
-            JUBSharedData *data = [JUBSharedData sharedInstance];
             [data setUserPin:pin];
             
             JUB_RV rv = [self verify_pin:contextID];
@@ -478,7 +524,7 @@
             }
         }];
         break;
-    }
+    }   // case JUB_NS_ENUM_VERIFY_MODE::VKPIN end
     case JUB_NS_ENUM_VERIFY_MODE::PIN:
     {
         rv = [self verify_pin:contextID];
@@ -492,7 +538,7 @@
             return;
         }
         break;
-    }
+    }   // case JUB_NS_ENUM_VERIFY_MODE::PIN end
     default:
         break;
     }   // switch (data.verifyMode) end

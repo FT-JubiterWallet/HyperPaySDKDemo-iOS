@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, JUB_NS_ENUM_OPT) {
 
 - (JUB_RV)show_virtualKeyboard:(JUB_UINT16)contextID;
 - (JUB_RV)verify_pin:(JUB_UINT16)contextID;
+- (JUB_RV)verify_fgpt:(JUB_UINT16)contextID;
 @end
 
 
