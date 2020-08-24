@@ -51,7 +51,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.title = @"JuBiter SDK Demo";
+    self.title = @"HyperPay SDK Demo";
     
     if (self.coinTypeArray.count != 0) {
         

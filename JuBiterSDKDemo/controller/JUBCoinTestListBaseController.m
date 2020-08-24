@@ -56,7 +56,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.title = @"JuBiter SDK Demo";
+    self.title = @"HyperPay SDK Demo";
     
     [self setNAVRightBtn];
     

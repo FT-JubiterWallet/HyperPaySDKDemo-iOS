@@ -1,16 +1,17 @@
-# JuBiter-SDK-Demo-iOS
+# HyperPaySDKDemo-iOS
 > Demo on iOS for JuBitSDK, supports for NFC and bluetooth(not finished yet) devices.
 
 > Depends on:
 > - jsoncpp([1.8.4](https://github.com/open-source-parsers/jsoncpp.git))
-> - JuBiterSDK([dev_3.0 branch](https://github.com/JubiterWallet/JubiterSDK_C.git))
+> - HyperPay-Jub_SDK_CXX
+([g2 branch](https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git))
 
 
 ## submodule
 ```bash
 cd deps
-git submodule add            https://github.com/open-source-parsers/jsoncpp.git jsoncpp
-git submodule add -b dev_3.0 https://github.com/JubiterWallet/JubiterSDK_C.git JubiterSDK
+git submodule add       https://github.com/open-source-parsers/jsoncpp.git jsoncpp
+git submodule add -b g2 https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git HyperPaySDK
 ```
 
 ```bash
@@ -25,7 +26,7 @@ git submodule update --init --recursive
 ```
 
 
-## JuBiterSDKDemo
+## HyperPaySDKDemo
 >  However, supports for bluetooth devices is not complete yet.
 
 Using 'JuBiterSDKDemo.xcworkspace' to build.

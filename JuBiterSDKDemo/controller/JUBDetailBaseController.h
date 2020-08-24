@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JubSDKCore/JUB_SDK.h"
+#import "JubSDKCore/JubSDKCore+DEV_BLE.h"
+#import "JubSDKCore/JubSDKCore+DEV_BIO.h"
 #include "JUB_SDK_main.h"
 
 #import "JUBCoinTestDetailBaseController.h"
@@ -19,9 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class JUBDetailBaseController;
 static JUBDetailBaseController *cSelf;
 
-int  BLEReadFuncCallBack(JUB_ULONG devHandle,  JUB_BYTE_PTR data, JUB_UINT32 dataLen);
-void BLEScanFuncCallBack(JUB_BYTE_PTR devName, JUB_BYTE_PTR uuid, JUB_UINT32 type);
-void BLEDiscFuncCallBack(JUB_BYTE_PTR uuid);
+int  BLEReadFuncCallBack(unsigned long int devHandle,  unsigned char* data, unsigned int dataLen);
+void BLEScanFuncCallBack(unsigned char* devName, unsigned char* uuid, unsigned int type);
+void BLEDiscFuncCallBack(unsigned char* uuid);
 
 
 @interface JUBDetailBaseController : JUBCoinTestDetailBaseController
@@ -32,32 +33,31 @@ void BLEDiscFuncCallBack(JUB_BYTE_PTR uuid);
 @property (nonatomic, nonatomic, readwrite) long optCoinType;
 @property (nonatomic, nonatomic, readwrite) long optIndex;
 
-- (void)beginNFCSession;
 - (void)beginBLESession;
 
 
 #pragma mark - 操作菜单 通讯库寻卡回调
-- (void)MenuOption:(JUB_UINT16)deviceID;
+- (void)MenuOption:(NSUInteger)deviceID;
 
 
 #pragma mark - Device 通讯库寻卡回调
-- (void)DeviceOpt:(JUB_UINT16)deviceID;
+- (void)DeviceOpt:(NSUInteger)deviceID;
 
 
 #pragma mark - BTC 通讯库寻卡回调
-- (void)CoinBTCOpt:(JUB_UINT16)deviceID;
+- (void)CoinBTCOpt:(NSUInteger)deviceID;
 
 
 #pragma mark - ETH 通讯库寻卡回调
-- (void)CoinETHOpt:(JUB_UINT16)deviceID;
+- (void)CoinETHOpt:(NSUInteger)deviceID;
 
 
 #pragma mark - EOS 通讯库寻卡回调
-- (void)CoinEOSOpt:(JUB_UINT16)deviceID;
+- (void)CoinEOSOpt:(NSUInteger)deviceID;
 
 
 #pragma mark - XRP 通讯库寻卡回调
-- (void)CoinXRPOpt:(JUB_UINT16)deviceID;
+- (void)CoinXRPOpt:(NSUInteger)deviceID;
 
 
 @end

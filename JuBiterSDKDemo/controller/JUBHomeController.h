@@ -9,12 +9,12 @@
 #import "JUBCoinTestListBaseController.h"
 #import "JUBBLEDeviceScanListView.h"
 #import "JUBBLEDisconnectView.h"
+#import "JubSDKCore/JubSDKCore+DEV_BLE.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 
-#define BUTTON_TITLE_NFC    @"NFC"
 #define BUTTON_TITLE_BLE    @"BLE"
 
 

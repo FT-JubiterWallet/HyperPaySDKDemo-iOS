@@ -12,58 +12,15 @@
 #import "JUBScanDeviceInfo.h"
 #import "JUBNotification.h"
 
-#pragma mark - NFC 通讯库寻卡回调
-inline void NFCScanFuncCallBack(unsigned int errorCode,
-                                const char* uuid,
-                                unsigned int devType) {
-    
-//    JUBSharedData *data = [JUBSharedData sharedInstance];
-//    JUBDetailBaseController *selfClass = (JUBDetailBaseController*)data.selfClass;
-    
-    if (JUBR_OK != errorCode) {
-        [cSelf addMsgData:[NSString stringWithFormat:@"[NFCScanFuncCallBackDev() return 0x%iu.]", errorCode]];
-        
-        return;
-    }
-    [cSelf addMsgData:[NSString stringWithFormat:@"[NFCScanFuncCallBackDev() OK.]"]];
-    
-    JUB_RV rv = JUBR_ERROR;
-    
-    JUB_UINT16 deviceID = 0;
-    rv = JUB_connectNFCDevice((JUB_BYTE_PTR)uuid,
-                              &deviceID);
-    if (JUBR_OK != rv) {
-        [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_connectNFCDevice() return 0x%lu.]", rv]];
-        return;
-    }
-    [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_connectNFCDevice() OK.]"]];
-    
-    rv = JUB_isDeviceNFCConnect(deviceID);
-    if(JUBR_OK != rv) {
-        [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_isDeviceNFCConnect() return 0x%lu.]", rv]];
-        return;
-    }
-    [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_isDeviceNFCConnect() OK.]"]];
-    
-    [cSelf MenuOption:deviceID];
-    
-    rv = JUB_disconnectNFCDevice(deviceID);
-    if (JUBR_OK != rv) {
-        [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_disconnectNFCDevice() return 0x%lu.]", rv]];
-        return;
-    }
-    [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_disconnectNFCDevice() OK.]"]];
-}
-
 
 #pragma mark - BLE 通讯库寻卡回调
-int BLEReadFuncCallBack(JUB_ULONG devHandle, JUB_BYTE_PTR data, JUB_UINT32 dataLen) {
+int BLEReadFuncCallBack(unsigned long int devHandle, unsigned char* data, unsigned int dataLen) {
     
     return -1;
 }
 
 
-void BLEScanFuncCallBack(JUB_BYTE_PTR devName, JUB_BYTE_PTR uuid, JUB_UINT32 type) {
+void BLEScanFuncCallBack(unsigned char* devName, unsigned char* uuid, unsigned int type) {
     
     NSLog(@"Scan: [%s:%s:0x%u]", devName, uuid, type);
     
@@ -82,7 +39,7 @@ void BLEScanFuncCallBack(JUB_BYTE_PTR devName, JUB_BYTE_PTR uuid, JUB_UINT32 typ
 }
 
 
-void BLEDiscFuncCallBack(JUB_BYTE_PTR uuid) {
+void BLEDiscFuncCallBack(unsigned char* uuid) {
     
     NSLog(@"Disc: [%s]", uuid);
     
@@ -117,52 +74,29 @@ void BLEDiscFuncCallBack(JUB_BYTE_PTR uuid) {
 }
 
 
-- (void)beginNFCSession {
-    
-    JUBSharedData *data = [JUBSharedData sharedInstance];
-//    [data setSelfClass:self.selfClass];
-    data.optItem = self.optItem;
-    
-    std::string fileName = "42584E46433230303532353030303031_apk";
-//    std::string fileName = "42584E46433230303532353030303032_apk";
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%s", fileName.c_str()]
-                                                         ofType:@"settings"];
-    Json::Value root = readJSON([filePath UTF8String]);
-    
-    //通讯库调用
-    NFC_DEVICE_INIT_PARAM param;
-    param.scanCallBack = NFCScanFuncCallBack;
-    param.crt = (char*)root["SCP11c"]["OCE"][1][0].asCString();
-    param.sk  = (char*)root["SCP11c"]["OCE"][1][2].asCString();
-    param.hostID = (char*)root["SCP11c"]["HostID"].asCString();
-    param.keyLength = root["SCP11c"]["KeyLength"].asUInt();
-    JUB_RV rv = JUB_initNFCDevice(param);
-    if (JUBR_OK != rv) {
-        [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_initNFCDevice() ERROR.]"]];
-        
-        return;
-    }
-    [cSelf addMsgData:[NSString stringWithFormat:@"[JUB_initNFCDevice() OK.]"]];
-}
-
-
 - (void)beginBLESession {
     
-    JUBSharedData *data = [JUBSharedData sharedInstance];
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
 //    [data setSelfClass:self.selfClass];
-    data.optItem = self.optItem;
+    [sharedData setOptItem:self.optItem];
     
-    [self MenuOption:[[data currDeviceID] intValue]];
+    [self MenuOption:[sharedData currDeviceID]];
 }
 
 
 #pragma mark - 操作菜单 通讯库寻卡回调
-- (void)MenuOption:(JUB_UINT16)deviceID {
+- (void)MenuOption:(NSUInteger)deviceID {
     
-    JUBSharedData *data = [JUBSharedData sharedInstance];
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
 //    JUBDetailBaseController *selfClass = (JUBDetailBaseController*)data.selfClass;
     
-    switch (data.optItem) {
+    switch ([sharedData optItem]) {
     case JUB_NS_ENUM_MAIN::OPT_DEVICE:
     {
         [self DeviceOpt:deviceID];
@@ -195,31 +129,31 @@ void BLEDiscFuncCallBack(JUB_BYTE_PTR uuid) {
 
 
 #pragma mark - Device 通讯库寻卡回调
-- (void)DeviceOpt:(JUB_UINT16)deviceID {
+- (void)DeviceOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - BTC 通讯库寻卡回调
-- (void)CoinBTCOpt:(JUB_UINT16)deviceID {
+- (void)CoinBTCOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - ETH 通讯库寻卡回调
-- (void)CoinETHOpt:(JUB_UINT16)deviceID {
+- (void)CoinETHOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - EOS 通讯库寻卡回调
-- (void)CoinEOSOpt:(JUB_UINT16)deviceID {
+- (void)CoinEOSOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - XRP 通讯库寻卡回调
-- (void)CoinXRPOpt:(JUB_UINT16)deviceID {
+- (void)CoinXRPOpt:(NSUInteger)deviceID {
     
 }
 

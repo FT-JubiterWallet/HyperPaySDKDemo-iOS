@@ -24,8 +24,6 @@
 	<string>App need your approval to access to the bluetooth</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>YES</string>
-	<key>NFCReaderUsageDescription</key>
-	<string>App need your approval to access to the NFC</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>请点击“允许”以允许访问。</string>
 	<key>NSCameraUsageDescription</key>

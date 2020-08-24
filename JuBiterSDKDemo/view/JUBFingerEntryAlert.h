@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface JUBFingerEntryAlert : UIView
 
+@property (nonatomic, assign) NSInteger fingerNumberSum;
+
 @property (nonatomic, assign) NSInteger fingerNumber;
 
 + (JUBFingerEntryAlert *)show;

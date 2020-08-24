@@ -30,8 +30,6 @@
     
     JUBFingerEntryAlert *alertView = [JUBFingerEntryAlert creatSelf];
     
-    alertView.fingerNumber = 1;
-    
     UIView *whiteMainView = [alertView addMainView];
     
     [alertView addSubviewAboveSuperView:whiteMainView];
@@ -83,15 +81,19 @@
 #pragma mark - 添加mainview上面的子视图
 - (UIButton *)addButtonAboveSuperView:(UIView *)mainView {
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(mainView.frame) - 25, 10, 15, 15)];
-    
-    [closeButton setBackgroundImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
-    
-    [closeButton setBackgroundImage:[UIImage imageNamed:@"close"] forState:UIControlStateHighlighted];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(mainView.frame) - 45, 10, 35, 35)];
     
     [closeButton addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
     
     [mainView addSubview:closeButton];
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
+    
+    imageView.image = [UIImage imageNamed:@"close"];
+    
+    [closeButton addSubview:imageView];
+    
+    imageView.center = CGPointMake(CGRectGetWidth(closeButton.frame)/2.0, CGRectGetHeight(closeButton.frame)/2.0);
     
     return closeButton;
 }
@@ -99,7 +101,7 @@
 
 - (void)close {
     
-    [JUBWarningAlert warningAlert:@"Are you sure you want to cancel the fingerprint enroll ?" warningCallBack:^{
+    [JUBWarningAlert warningAlert:@"Are you sure you want to CANCEL the fingerprint enroll ?" warningCallBack:^{
         [self dismiss];
     }];
 }
@@ -109,7 +111,7 @@
     
     UIImageView *fingerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetWidth(mainView.frame)/2 - 40, 30, 80, 84)];
     
-    fingerImageView.image = [UIImage imageNamed:@"finger-1"];
+    fingerImageView.image = [UIImage imageNamed:@"finger-0"];
     
     [mainView addSubview:fingerImageView];
     
@@ -119,36 +121,15 @@
 
 - (UILabel *)addTitleLabelAboveSuperView:(UIView *)mainView {
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.fingerImageView.frame) + 20, CGRectGetWidth(mainView.frame) - 2 * 20, CGRectGetHeight(mainView.frame))];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(self.fingerImageView.frame) + 20, CGRectGetWidth(mainView.frame) - 2 * 20, 20)];
     
-    titleLabel.text = @"4 more fingerprinting is required";
+    titleLabel.text = @"Please enroll the fingerprint";
     
     titleLabel.font = [UIFont systemFontOfSize:16];
     
     titleLabel.textAlignment = NSTextAlignmentCenter;
     
-    titleLabel.numberOfLines = 0;
-    
     [mainView addSubview:titleLabel];
-    
-    [titleLabel sizeToFit];
-    
-    titleLabel.center = CGPointMake(CGRectGetWidth(mainView.frame)/2, titleLabel.center.y);
-    
-    UILabel *animalLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(titleLabel.frame), CGRectGetMinY(titleLabel.frame), 50, CGRectGetHeight(titleLabel.frame))];
-    
-    animalLabel.text = @"...";
-    
-    [mainView addSubview:animalLabel];
-    
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        
-        if ([animalLabel.text isEqualToString:@"..."]) {
-            animalLabel.text = @"..";
-        } else {
-            animalLabel.text = @"...";
-        }
-    }];
     
     return titleLabel;
 }
@@ -165,23 +146,40 @@
 #pragma mark - getter setter方法
 - (void)setFingerNumber:(NSInteger)fingerNumber {
     
-    NSAssert(fingerNumber >= 1, @"fingerNumber的数值最小为1");
+    NSAssert(fingerNumber <= 10, @"fingerNumber的数值最大为10");
     
-    NSAssert(fingerNumber <= 5, @"fingerNumber的数值最大为5");
+    NSAssert(self.fingerNumberSum > 0, @"需要先设置fingerNumberSum的值");
     
     _fingerNumber = fingerNumber;
     
-    NSString *fingerImageName = [NSString stringWithFormat:@"finger-%ld", (long)fingerNumber];
-    
-    self.fingerImageView.image = [UIImage imageNamed:fingerImageName];
-    
-    if (self.fingerNumber == 5) {
-        self.titleLabel.text = @"Fingerprint enroll completed";
-    } else {
-        self.titleLabel.text = [NSString stringWithFormat:@"%ld more fingerprinting is required", 5 - (long)self.fingerNumber];
+    if (self.fingerNumberSum > 0) {
+        
+        NSString *fingerImageName = [NSString stringWithFormat:@"finger-%ld", (NSInteger)((float)fingerNumber/self.fingerNumberSum * 10) - 1];
+        
+        NSLog(@"fingerImageName = %@", fingerImageName);
+        
+        self.fingerImageView.image = [UIImage imageNamed:fingerImageName];
+        
+        NSInteger remainingTime = self.fingerNumberSum - (long)fingerNumber;
+        
+        if (remainingTime > 0) {
+            
+            self.titleLabel.text = [NSString stringWithFormat:@"%ld more time(s) is required", remainingTime];
+        }
+        else {
+            self.titleLabel.text = @"Fingerprint entry completed";
+        }
     }
-    
 }
+
+
+- (void)setFingerNumberSum:(NSInteger)fingerNumberSum {
+    
+    NSAssert(fingerNumberSum <= 10, @"fingerNumberSum的数值最大为10");
+    
+    _fingerNumberSum = fingerNumberSum;
+}
+
 
 - (void)dealloc
 {

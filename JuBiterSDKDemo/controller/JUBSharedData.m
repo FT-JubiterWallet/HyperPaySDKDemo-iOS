@@ -9,6 +9,9 @@
 #import "JUBSharedData.h"
 
 
+JubSDKCore* g_sdk;
+
+
 @implementation JUBSharedData
 @synthesize currDeviceID = _currDeviceID;
 
@@ -19,14 +22,18 @@ static JUBSharedData *_sharedDataInstance;
     
     if (self = [super init]) {
         // custom initialization
+        if (nil == g_sdk) {
+            g_sdk = [[JubSDKCore alloc] init];
+        }
+        
         _optItem = 0;
         _userPin = nil;
         _neoPin = nil;
         _verifyMode = VERIFY_MODE_ITEM;
-        _deviceType = SEG_NFC;
-        _coinUnit = ns;
-        _currDeviceID = nil;
-        _currContextID = nil;
+        _deviceType = SEG_BLE;
+        _coinUnit = NS_BTC_UNIT_TYPE_NS;
+        _currDeviceID = 0;
+        _currContextID = 0;
     }
     
     return self;
