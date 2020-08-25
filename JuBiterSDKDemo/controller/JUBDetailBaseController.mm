@@ -8,10 +8,10 @@
 
 #import "JUBSharedData.h"
 
-#import "JUBDetailBaseController.h"
 #import "JUBScanDeviceInfo.h"
 #import "JUBNotification.h"
 
+#import "JUBDetailBaseController.h"
 
 #pragma mark - BLE 通讯库寻卡回调
 int BLEReadFuncCallBack(unsigned long int devHandle, unsigned char* data, unsigned int dataLen) {
@@ -59,7 +59,7 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
 //@synthesize selfClass;
 @synthesize optItem;
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -67,19 +67,20 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
 }
 
 
-- (void)viewDidDisappear:(BOOL)animated {
+- (void) viewDidDisappear:(BOOL)animated {
     
     [super viewDidDisappear:animated];
     cSelf = nil;
 }
 
 
-- (void)beginBLESession {
+- (void) beginBLESession {
     
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
         return;
     }
+    
 //    [data setSelfClass:self.selfClass];
     [sharedData setOptItem:self.optItem];
     
@@ -88,18 +89,23 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
 
 
 #pragma mark - 操作菜单 通讯库寻卡回调
-- (void)MenuOption:(NSUInteger)deviceID {
+- (void) MenuOption:(NSUInteger)deviceID {
     
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
         return;
     }
+    
 //    JUBDetailBaseController *selfClass = (JUBDetailBaseController*)data.selfClass;
     
     switch ([sharedData optItem]) {
     case JUB_NS_ENUM_MAIN::OPT_DEVICE:
     {
-        [self DeviceOpt:deviceID];
+        JUBAlertView *alertView = [JUBAlertView showMsg:@"Processing..."];
+        {
+            [self DeviceOpt:deviceID];
+            [alertView dismiss];
+        }
         break;
     }
     case JUB_NS_ENUM_MAIN::OPT_BTC:
@@ -129,31 +135,31 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
 
 
 #pragma mark - Device 通讯库寻卡回调
-- (void)DeviceOpt:(NSUInteger)deviceID {
+- (void) DeviceOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - BTC 通讯库寻卡回调
-- (void)CoinBTCOpt:(NSUInteger)deviceID {
+- (void) CoinBTCOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - ETH 通讯库寻卡回调
-- (void)CoinETHOpt:(NSUInteger)deviceID {
+- (void) CoinETHOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - EOS 通讯库寻卡回调
-- (void)CoinEOSOpt:(NSUInteger)deviceID {
+- (void) CoinEOSOpt:(NSUInteger)deviceID {
     
 }
 
 
 #pragma mark - XRP 通讯库寻卡回调
-- (void)CoinXRPOpt:(NSUInteger)deviceID {
+- (void) CoinXRPOpt:(NSUInteger)deviceID {
     
 }
 

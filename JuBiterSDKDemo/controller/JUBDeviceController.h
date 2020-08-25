@@ -7,8 +7,6 @@
 //
 
 #import "JUBDetailBaseController.h"
-#import "JUBBLEDeviceScanListView.h"
-#import "JUBBLEDeviceListCell.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

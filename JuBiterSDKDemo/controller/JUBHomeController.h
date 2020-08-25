@@ -6,9 +6,9 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-#import "JUBCoinTestListBaseController.h"
-#import "JUBBLEDeviceScanListView.h"
-#import "JUBBLEDisconnectView.h"
+//#import "JUBBLEDeviceScanListView.h"
+//#import "JUBBLEDisconnectView.h"
+#import "JUBSharedData.h"
 #import "JubSDKCore/JubSDKCore+DEV_BLE.h"
 
 

@@ -6,13 +6,7 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-
-#import "JUBAlertView.h"
-#import "JUBPinAlertView.h"
-//#import "JUBListAlert.h"
-#import "JUBFingerEntryAlert.h"
 #import "JUBSharedData.h"
-
 
 #import "JUBFgptMgrController.h"
 
@@ -23,7 +17,7 @@
 
 @implementation JUBFgptMgrController
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
@@ -71,9 +65,9 @@
 //}
 //
 //
-- (NSUInteger)identity_verifyPIN:(NSUInteger)deviceID
-                            mode:(JUB_NS_ENUM_IDENTITY_VERIFY_MODE)mode
-                             pin:(NSString*)pin {
+- (NSUInteger) identity_verifyPIN:(NSUInteger)deviceID
+                             mode:(JUB_NS_ENUM_IDENTITY_VERIFY_MODE)mode
+                              pin:(NSString*)pin {
     
     NSUInteger retry = [g_sdk JUB_IdentityVerifyPIN:deviceID
                                                mode:mode
@@ -91,7 +85,7 @@
 }
 
 
-- (NSUInteger)identity_showNineGrids:(NSUInteger)deviceID {
+- (NSUInteger) identity_showNineGrids:(NSUInteger)deviceID {
     
     [g_sdk JUB_IdentityShowNineGrids:deviceID];
     NSUInteger rv = [g_sdk lastError];
@@ -107,7 +101,7 @@
 }
 
 
-- (NSUInteger)identity_cancelNineGrids:(NSUInteger)deviceID {
+- (NSUInteger) identity_cancelNineGrids:(NSUInteger)deviceID {
     
     [g_sdk JUB_IdentityCancelNineGrids:deviceID];
     NSUInteger rv = [g_sdk lastError];
@@ -123,7 +117,7 @@
 }
 
 
-- (NSUInteger)identity_verify_test:(NSUInteger)deviceID {
+- (NSUInteger) identity_verify_test:(NSUInteger)deviceID {
     
     __block
     NSUInteger rv = JUBR_ERROR;
@@ -191,7 +185,7 @@
 }
 
 
-- (NSUInteger)enum_fgpt_test:(NSUInteger)deviceID {
+- (NSUInteger) enum_fgpt_test:(NSUInteger)deviceID {
     
     NSUInteger rv = JUBR_ERROR;
     
@@ -213,10 +207,10 @@
 }
 
 
-- (FgptEnrollResult)enroll_fgpt_test:(NSUInteger)deviceID
-                           fgptIndex:(NSUInteger)fgptIndex
-                               times:(NSUInteger)times
-                              fgptID:(NSUInteger)fgptID {
+- (FgptEnrollResult) enroll_fgpt_test:(NSUInteger)deviceID
+                            fgptIndex:(NSUInteger)fgptIndex
+                                times:(NSUInteger)times
+                               fgptID:(NSUInteger)fgptID {
     
     NSUInteger rv = JUBR_ERROR;
     
@@ -239,7 +233,7 @@
 }
 
 
-- (NSUInteger)erase_fgpt_test:(NSUInteger)deviceID {
+- (NSUInteger) erase_fgpt_test:(NSUInteger)deviceID {
     
     NSUInteger rv = JUBR_ERROR;
     
@@ -255,8 +249,8 @@
 }
 
 
-- (NSUInteger)delete_fgpt_test:(NSUInteger)deviceID
-                        fgptID:(NSUInteger)fgptID {
+- (NSUInteger) delete_fgpt_test:(NSUInteger)deviceID
+                         fgptID:(NSUInteger)fgptID {
     
     NSUInteger rv = JUBR_ERROR;
     
@@ -284,7 +278,7 @@
 
 
 //指纹录入
-- (void)fingerPrintEntry {
+- (void) fingerPrintEntry {
     
 //    JUBFingerEntryAlert *fingerEntryAlert = [JUBFingerEntryAlert show];
 //
@@ -376,7 +370,7 @@
 
 
 //清空指纹
-- (void)clearFingerPrint {
+- (void) clearFingerPrint {
     
     //向设备发送清空指纹的指令
     //
@@ -390,7 +384,7 @@
 
 
 //删除指纹
-- (void)selectedFinger:(NSInteger)selectedFingerIndex {
+- (void) selectedFinger:(NSInteger)selectedFingerIndex {
     
     NSLog(@"selectedFingerIndex = %ld", (long)selectedFingerIndex);
     

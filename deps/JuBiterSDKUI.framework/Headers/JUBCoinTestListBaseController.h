@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface JUBCoinTestListBaseController : UIViewController
 
+@property (nonatomic, strong) NSArray<JUBButtonModel *> *buttonArray;
+
 @property (nonatomic, assign) NSInteger selectedTransmitTypeIndex;
 
 @property (nonatomic, assign) BOOL showBLEButton;

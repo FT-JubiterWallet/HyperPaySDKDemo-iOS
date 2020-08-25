@@ -11,7 +11,6 @@
 #import "JubSDKCore/JubSDKCore+DEV_BIO.h"
 #include "JUB_SDK_main.h"
 
-#import "JUBCoinTestDetailBaseController.h"
 #import "JUBHomeController.h"
 
 

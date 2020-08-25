@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JUBFingerManagerBaseController.h"
 
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+DEV_BIO.h"

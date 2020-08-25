@@ -1,0 +1,6 @@
+framework module JuBiterSDKUI {
+  umbrella header "JuBiterSDKUI.h"
+
+  export *
+  module * { export * }
+}

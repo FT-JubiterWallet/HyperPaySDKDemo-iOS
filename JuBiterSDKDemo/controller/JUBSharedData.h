@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+
+#import <JuBiterSDKUI/JuBiterSDKUI.h>
+
 #import "JubSDKCore/JubSDKCore+COIN_BTC.h"
 
 

@@ -6,12 +6,10 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-#import "JUBSelectApduView.h"
-#import "JUBPinAlertView.h"
 #import "JUBSharedData.h"
 
-#import "JUBDeviceController.h"
 #import "JUBHomeController.h"
+#import "JUBDeviceController.h"
 
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+DEV_BLE.h"
@@ -25,7 +23,7 @@
 @implementation JUBDeviceController
 
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -59,7 +57,7 @@
 
 
 //测试类型的按钮点击回调
-- (void)selectedTestActionTypeIndex:(NSInteger)index {
+- (void) selectedTestActionTypeIndex:(NSInteger)index {
     
     NSLog(@"JUBDeviceController--selectedTransmitTypeIndex = %ld, Type = %ld, selectedTestActionType = %ld", (long)self.selectedTransmitTypeIndex, (long)self.selectCoinTypeIndex, (long)index);
     
@@ -101,7 +99,7 @@
 
 
 #pragma mark - 通讯库寻卡回调
-- (void)DeviceOpt:(NSUInteger)deviceID {
+- (void) DeviceOpt:(NSUInteger)deviceID {
     
     switch (self.optIndex) {
     case JUB_NS_ENUM_DEV_OPT::QUERY_BATTERY:
@@ -131,7 +129,7 @@
 
 
 #pragma mark - 业务
-- (void)query_device_battery:(NSUInteger)deviceID {
+- (void) query_device_battery:(NSUInteger)deviceID {
     
     NSString *percent = [g_sdk JUB_QueryBattery:deviceID];
     NSUInteger rv = [g_sdk lastError];
@@ -145,7 +143,7 @@
 }
 
 
-- (void)get_device_info_test:(NSUInteger)deviceID {
+- (void) get_device_info_test:(NSUInteger)deviceID {
     
     DeviceInfo *info = [g_sdk JUB_GetDeviceInfo:deviceID];
     NSUInteger rv = [g_sdk lastError];
@@ -164,7 +162,7 @@
 }
 
 
-- (void)get_device_applet_test:(NSUInteger)deviceID {
+- (void) get_device_applet_test:(NSUInteger)deviceID {
     
     NSString* appList = [g_sdk JUB_EnumApplets:deviceID];
     NSUInteger rv = [g_sdk lastError];
@@ -203,7 +201,7 @@
 }
 
 
-- (void)get_device_cert_test:(NSUInteger)deviceID {
+- (void) get_device_cert_test:(NSUInteger)deviceID {
     
     NSString* cert = [g_sdk JUB_GetDeviceCert:deviceID];
     NSUInteger rv = [g_sdk lastError];
