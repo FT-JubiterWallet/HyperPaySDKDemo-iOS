@@ -17,8 +17,8 @@
 #import "JUBDeviceController.h"
 #import "JUBBTCController.h"
 #import "JUBETHController.h"
-//#import "JUBEOSController.h"
-//#import "JUBXRPController.h"
+#import "JUBEOSController.h"
+#import "JUBXRPController.h"
 
 
 @interface JUBHomeController ()
@@ -296,16 +296,16 @@
         vc = [[JUBETHController alloc] init];
         break;
     }
-//    case JUB_NS_ENUM_MAIN::OPT_EOS:
-//    {
-//        vc = [[JUBEOSController alloc] init];
-//        break;
-//    }
-//    case JUB_NS_ENUM_MAIN::OPT_XRP:
-//    {
-//        vc = [[JUBXRPController alloc] init];
-//        break;
-//    }
+    case JUB_NS_ENUM_MAIN::OPT_EOS:
+    {
+        vc = [[JUBEOSController alloc] init];
+        break;
+    }
+    case JUB_NS_ENUM_MAIN::OPT_XRP:
+    {
+        vc = [[JUBXRPController alloc] init];
+        break;
+    }
     default:
         return;
     }   // switch (optType) end

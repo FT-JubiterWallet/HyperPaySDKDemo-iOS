@@ -8,6 +8,7 @@
 
 #import "JUBCoinController.h"
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -17,9 +18,9 @@ NS_ASSUME_NONNULL_BEGIN
 #define BUTTON_TITLE_XRP            @"XRP"
 
 
-typedef NS_ENUM(NSInteger, JUB_NS_ENUM_XRP_COINTYPE) {
-    COIN_XRP
-};
+//typedef NS_ENUM(NSInteger, JUB_NS_ENUM_XRP_COIN) {
+//    BTN_XRP
+//};
 
 
 @interface JUBXRPController : JUBCoinController

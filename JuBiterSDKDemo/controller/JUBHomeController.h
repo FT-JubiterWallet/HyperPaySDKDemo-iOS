@@ -6,10 +6,7 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-//#import "JUBBLEDeviceScanListView.h"
-//#import "JUBBLEDisconnectView.h"
 #import "JUBSharedData.h"
-#import "JubSDKCore/JubSDKCore+DEV_BLE.h"
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -40,6 +40,8 @@
 		67930AD5247E658D0041DBDF /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67930AD2247E658D0041DBDF /* json_reader.cpp */; };
 		679C7C3E24F510B90043FD50 /* JuBiterSDKUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 679C7C3D24F510B90043FD50 /* JuBiterSDKUI.framework */; };
 		679C7C3F24F510B90043FD50 /* JuBiterSDKUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 679C7C3D24F510B90043FD50 /* JuBiterSDKUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		679C7C4224F5286F0043FD50 /* JUBEOSController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 679C7C4124F5286F0043FD50 /* JUBEOSController.mm */; };
+		679C7C4524F5F9CD0043FD50 /* JUBXRPController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 679C7C4324F5F9CC0043FD50 /* JUBXRPController.mm */; };
 		67CC31982466AB5800DDB9CD /* JUBETHController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC31962466AB5800DDB9CD /* JUBETHController.mm */; };
 		67CC319B2466AEE400DDB9CD /* JUBCoinController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC319A2466AEE400DDB9CD /* JUBCoinController.mm */; };
 		67CC31A12466BFEE00DDB9CD /* JUBDetailBaseController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC31A02466BFEE00DDB9CD /* JUBDetailBaseController.mm */; };
@@ -107,6 +109,10 @@
 		67930AD2247E658D0041DBDF /* json_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_reader.cpp; path = deps/jsoncpp/src/lib_json/json_reader.cpp; sourceTree = "<group>"; };
 		67930AD9247E74730041DBDF /* JubSDKCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JubSDKCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		679C7C3D24F510B90043FD50 /* JuBiterSDKUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JuBiterSDKUI.framework; path = deps/JuBiterSDKUI.framework; sourceTree = "<group>"; };
+		679C7C4024F5286F0043FD50 /* JUBEOSController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBEOSController.h; sourceTree = "<group>"; };
+		679C7C4124F5286F0043FD50 /* JUBEOSController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBEOSController.mm; sourceTree = "<group>"; };
+		679C7C4324F5F9CC0043FD50 /* JUBXRPController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBXRPController.mm; sourceTree = "<group>"; };
+		679C7C4424F5F9CC0043FD50 /* JUBXRPController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBXRPController.h; sourceTree = "<group>"; };
 		67CC31962466AB5800DDB9CD /* JUBETHController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBETHController.mm; sourceTree = "<group>"; };
 		67CC31972466AB5800DDB9CD /* JUBETHController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBETHController.h; sourceTree = "<group>"; };
 		67CC31992466AEE400DDB9CD /* JUBCoinController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBCoinController.h; sourceTree = "<group>"; };
@@ -237,6 +243,10 @@
 				687BCECB245866BC00CD1780 /* JUBBTCController.mm */,
 				67CC31972466AB5800DDB9CD /* JUBETHController.h */,
 				67CC31962466AB5800DDB9CD /* JUBETHController.mm */,
+				679C7C4024F5286F0043FD50 /* JUBEOSController.h */,
+				679C7C4124F5286F0043FD50 /* JUBEOSController.mm */,
+				679C7C4424F5F9CC0043FD50 /* JUBXRPController.h */,
+				679C7C4324F5F9CC0043FD50 /* JUBXRPController.mm */,
 			);
 			path = controller;
 			sourceTree = "<group>";
@@ -368,6 +378,7 @@
 				677D34DA24BC2F3500391857 /* JUBNotification.m in Sources */,
 				676E97AF24E538EE0011D818 /* JUBFgptMgrController.mm in Sources */,
 				677D34D424BC2EAD00391857 /* JUBScanDeviceInfo.m in Sources */,
+				679C7C4224F5286F0043FD50 /* JUBEOSController.mm in Sources */,
 				67808E17245A7737009041FD /* JUB_SDK_main.cpp in Sources */,
 				687BCEDD245866BD00CD1780 /* JUBBTCController.mm in Sources */,
 				67930AD5247E658D0041DBDF /* json_reader.cpp in Sources */,
@@ -376,6 +387,7 @@
 				8BE2A71F235D89620015B9AB /* main.m in Sources */,
 				67CC319B2466AEE400DDB9CD /* JUBCoinController.mm in Sources */,
 				67930AD3247E658D0041DBDF /* json_value.cpp in Sources */,
+				679C7C4524F5F9CD0043FD50 /* JUBXRPController.mm in Sources */,
 				67CC31982466AB5800DDB9CD /* JUBETHController.mm in Sources */,
 				67256A2F24E0FCA800FC5BA5 /* JUBSharedData.m in Sources */,
 				67362ABD24D809B0008DC757 /* JUBDevicePool.m in Sources */,
@@ -507,7 +519,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PL9NCP8CG6;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -548,7 +560,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PL9NCP8CG6;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

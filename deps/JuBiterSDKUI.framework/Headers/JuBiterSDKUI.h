@@ -26,6 +26,7 @@
 #import "JUBPinAlertView.h"
 #import "JUBSelectApduView.h"
 #import "JUBWarningAlert.h"
+#import "JUBInputAlert.h"
 
 //controller
 #import "JUBCoinTestDetailBaseController.h"

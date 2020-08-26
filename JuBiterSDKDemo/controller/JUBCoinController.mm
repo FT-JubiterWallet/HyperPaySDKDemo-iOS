@@ -158,6 +158,7 @@
         switch (self.selectedTransmitTypeIndex) {
         case JUB_NS_ENUM_DEV_TYPE::SEG_BLE:
         {
+            [self beginBLESession];
             break;
         }
         default:
@@ -465,16 +466,9 @@
 
 - (NSUInteger) verify_pin:(NSUInteger)contextID {
     
-    NSUInteger rv = JUBR_ERROR;
-    
-    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
-    if (nil == sharedData) {
-        return rv;
-    }
-    
     NSUInteger retry = [g_sdk JUB_VerifyPIN:contextID
                                      pinMix:[[JUBSharedData sharedInstance] userPin]];
-    rv = [g_sdk lastError];
+    NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN(%lu) return 0x%2lx.]", retry, rv]];
         return rv;

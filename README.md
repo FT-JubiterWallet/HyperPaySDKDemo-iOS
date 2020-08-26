@@ -4,14 +4,14 @@
 > Depends on:
 > - jsoncpp([1.8.4](https://github.com/open-source-parsers/jsoncpp.git))
 > - HyperPay-Jub_SDK_CXX
-([g2 branch](https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git))
+([dev_g2 branch](https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git))
 
 
 ## submodule
 ```bash
 cd deps
-git submodule add       https://github.com/open-source-parsers/jsoncpp.git jsoncpp
-git submodule add -b g2 https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git HyperPaySDK
+git submodule add           https://github.com/open-source-parsers/jsoncpp.git jsoncpp
+git submodule add -b dev_g2 https://github.com/FT-JubiterWallet/HyperPay-Jub_SDK_CXX.git HyperPaySDK
 ```
 
 ```bash

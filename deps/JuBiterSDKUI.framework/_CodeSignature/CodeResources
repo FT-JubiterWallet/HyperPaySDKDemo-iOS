@@ -64,6 +64,10 @@
 		<data>
 		YL8SfwiVR89YSguPSF3uJGRCwsE=
 		</data>
+		<key>Headers/JUBInputAlert.h</key>
+		<data>
+		NcGGUi2HXewTneWh1/N0CKPqrlY=
+		</data>
 		<key>Headers/JUBListAlert.h</key>
 		<data>
 		wMbNj98e2f6hvN20HAA9lF8NkSM=
@@ -74,7 +78,7 @@
 		</data>
 		<key>Headers/JUBPinAlertView.h</key>
 		<data>
-		JNzO781U61Dq3Q/G16/73jGdmAU=
+		QLRI7Y4xlQA8N4XEP4Uhz3fcCmY=
 		</data>
 		<key>Headers/JUBSelectApduView.h</key>
 		<data>
@@ -86,7 +90,7 @@
 		</data>
 		<key>Headers/JuBiterSDKUI.h</key>
 		<data>
-		4cTof73iA3CQAFHHn8YxImXpKH8=
+		BK+FC1vS7roSSXiom0Hm8TSXOpk=
 		</data>
 		<key>Headers/Tools.h</key>
 		<data>
@@ -94,7 +98,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ey4YqH3IJMOjYHApSE8DXmVWUmQ=
+		jxT1QGU5s7pL2LzQHYUOJp/PPno=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -208,6 +212,13 @@
 			cSmUYPN4MSHjhjvfrjy9g64TinFK5juo2nmSrlYR4RE=
 			</data>
 		</dict>
+		<key>Headers/JUBInputAlert.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			/cLAYZN//6Am4tcnKUuirFtbcselS4+ATem1u0+W6Zw=
+			</data>
+		</dict>
 		<key>Headers/JUBListAlert.h</key>
 		<dict>
 			<key>hash2</key>
@@ -226,7 +237,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			eE5VMkxI3zdfbXMeOVObbJfMtmzI1hoUvXe0p/9O6RE=
+			zb8HkgO27TbPOrvO1jSoaEoXMJzyDbYdesVWc1fmM90=
 			</data>
 		</dict>
 		<key>Headers/JUBSelectApduView.h</key>
@@ -247,7 +258,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			gN3W3g1z7xi+pEFkwjJzY3MtC2FtqgFZ89h5sWKfx3Q=
+			+IGq5cNzs2v2FEhhWWH71qhPQD81rGl8dvFFoLlCpzw=
 			</data>
 		</dict>
 		<key>Headers/Tools.h</key>
