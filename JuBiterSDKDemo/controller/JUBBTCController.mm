@@ -453,6 +453,15 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
     
     output.stdOutput.path.addressIndex = root["outputs"][i]["bip32_path"]["addressIndex"].asInt();
     
+    if (BOOL_NS_TRUE == output.stdOutput.isChangeAddress) {
+        NSString* changeAddress = [g_sdk JUB_GetAddressBTC:[[JUBSharedData sharedInstance] currContextID]
+                                                      path:output.stdOutput.path
+                                                     bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
+        if (JUBR_OK == [g_sdk lastError]) {
+            output.stdOutput.address = changeAddress;
+        }
+    }
+    
     return output;
 }
 
