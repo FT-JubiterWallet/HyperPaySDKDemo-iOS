@@ -12,6 +12,7 @@
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+COIN_XRP.h"
 
+#import "JUBXRPAmount.h"
 
 @interface JUBXRPController ()
 
@@ -26,9 +27,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.optItem = JUB_NS_ENUM_MAIN::OPT_XRP;
+    self.title = @"XRP options";
     
-    self.coinTypeArray = @[
+    self.optItem = JUB_NS_ENUM_MAIN::OPT_XRP;
+}
+
+
+- (NSArray*) subMenu {
+    
+    return @[
         BUTTON_TITLE_XRP
     ];
 }
@@ -69,7 +76,7 @@
             [g_sdk JUB_ClearContext:contextID];
             rv = [g_sdk lastError];
             if (JUBR_OK != rv) {
-                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return 0x%2lx.]", rv]];
+                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             }
             else {
                 [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() OK.]"]];
@@ -83,7 +90,7 @@
                                             cfg:cfg];
         rv = [g_sdk lastError];
         if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextXRP() return 0x%2lx.]", rv]];
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextXRP() OK.]"]];
@@ -114,37 +121,33 @@
                                               format:JUB_NS_ENUM_PUB_FORMAT::NS_HEX];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeXRP() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeXRP() OK.]"]];
     [self addMsgData:[NSString stringWithFormat:@"MainXpub in hex format: %@.", mainXpub]];
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *xpub = [g_sdk JUB_GetHDNodeXRP:contextID
                                       format:JUB_NS_ENUM_PUB_FORMAT::NS_HEX
-                                        path:path];
+                                        path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeXRP() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeXRP() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"pubkey(%@/%ld/%ld) in hex format: %@.", [sharedData currMainPath], path.change, path.addressIndex, xpub]];
+    [self addMsgData:[NSString stringWithFormat:@"pubkey(%@/%ld/%ld) in hex format: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], xpub]];
     
     NSString *address = [g_sdk JUB_GetAddressXRP:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"address(%@/%ld/%ld): %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"address(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -157,20 +160,16 @@
         return;
     }
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *address = [g_sdk JUB_GetAddressXRP:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_TRUE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressXRP() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -183,48 +182,93 @@
         return rv;
     }
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *address = [g_sdk JUB_SetMyAddressXRP:contextID
-                                              path:path];
+                                              path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressEOS() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Set my address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressXRP() OK.]"]];
+    [self addMsgData:[NSString stringWithFormat:@"Set my address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
     
     return rv;
 }
 
 
+- (NSString*) inputAmount {
+    
+    __block
+    NSString *amount;
+    
+    __block
+    BOOL isDone = NO;
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(
+        NSString * _Nonnull content,
+        JUBDissAlertCallBack _Nonnull dissAlertCallBack,
+        JUBSetErrorCallBack  _Nonnull setErrorCallBack
+    ) {
+        NSLog(@"content = %@", content);
+        if (nil == content) {
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else if (        [content isEqual:@""]
+                 || [JUBXRPAmount isValid:content]
+                 ) {
+            //隐藏弹框
+            amount = content;
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else {
+            setErrorCallBack([JUBXRPAmount formatRules]);
+            isDone = NO;
+        }
+    } keyboardType:UIKeyboardTypeDecimalPad];
+    customInputAlert.title = [JUBXRPAmount title:JUB_NS_ENUM_XRP_COIN::BTN_XRP];
+    customInputAlert.message = [JUBXRPAmount message];
+    customInputAlert.textFieldPlaceholder = [JUBXRPAmount formatRules];
+    customInputAlert.limitLength = [JUBXRPAmount limitLength];
+    
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
+    
+    // Convert to the smallest unit
+    return [JUBXRPAmount convertToProperFormat:amount
+                                           opt:JUB_NS_ENUM_XRP_COIN::BTN_XRP];
+}
+
+
 - (NSUInteger) tx_proc:(NSUInteger)contextID
+                amount:(NSString*)amount
                   root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
-    switch(self.optCoinType) {
+    switch(self.selectedMenuIndex) {
     default:
         rv = [self transaction_proc:contextID
+                             amount:amount
                                root:root];
         break;
-    }
+    }   // switch(self.selectedMenuIndex) end
     
     return rv;
 }
 
 
 - (NSUInteger) transaction_proc:(NSUInteger)contextID
+                         amount:(NSString*)amount
                            root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
     BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
+    path.change = (JUB_NS_ENUM_BOOL)root["XRP"]["bip32_path"]["change"].asBool();
+    path.addressIndex = root["XRP"]["bip32_path"]["addressIndex"].asUInt();
     
     //@interface TxXRP : NSObject
     //@property (atomic, copy  ) NSString* _Nonnull account;
@@ -275,6 +319,9 @@
         xrp.pymt.amount = [[PymtAmount alloc] init];
         xrp.pymt.destination    = [NSString stringWithUTF8String:root["XRP"][sType]["destination"].asCString()];
         xrp.pymt.amount.value   = [NSString stringWithUTF8String:root["XRP"][sType]["amount"]["value"].asCString()];
+        if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+            xrp.pymt.amount.value = amount;
+        }
         xrp.pymt.destinationTag = [NSString stringWithUTF8String:root["XRP"][sType]["destinationTag"].asCString()];
         break;
     }
@@ -287,7 +334,7 @@
                                                tx:xrp];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionXRP() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionXRP() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionXRP() OK.]"]];

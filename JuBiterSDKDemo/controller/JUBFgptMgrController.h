@@ -6,8 +6,6 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+DEV_BIO.h"
 #include "JUB_SDK_main.h"

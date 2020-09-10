@@ -13,6 +13,7 @@
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+COIN_EOS.h"
 
+#import "JUBEOSAmount.h"
 
 @interface JUBEOSController ()
 
@@ -27,10 +28,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.optItem = JUB_NS_ENUM_MAIN::OPT_EOS;
+    self.title = @"EOS options";
     
-    self.coinTypeArray = @[
+    self.optItem = JUB_NS_ENUM_MAIN::OPT_EOS;
+}
+
+
+- (NSArray*) subMenu {
+    
+    return @[
         BUTTON_TITLE_EOS,
+        BUTTON_TITLE_EOSTOKEN,
         BUTTON_TITLE_EOSBUYRAM,
         BUTTON_TITLE_EOSSELLRAM,
         BUTTON_TITLE_EOSSTAKE,
@@ -43,10 +51,15 @@
 - (void) CoinEOSOpt:(NSUInteger)deviceID {
     
     const char* json_file = "";
-    switch (self.optCoinType) {
+    switch (self.selectedMenuIndex) {
     case JUB_NS_ENUM_EOS_OPT::BTN_EOS:
     {
         json_file = JSON_FILE_EOS;
+        break;
+    }
+    case JUB_NS_ENUM_EOS_OPT::BTN_EOS_TOKEN:
+    {
+        json_file = JSON_FILE_EOS_TOKEN;
         break;
     }
     case JUB_NS_ENUM_EOS_OPT::BTN_EOS_BUYRAM:
@@ -71,7 +84,7 @@
     }
     default:
         break;
-    }   // switch (self.optCoinType) end
+    }   // switch (self.selectedMenuIndex) end
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%s", json_file]
                                                          ofType:@"json"];
@@ -103,7 +116,7 @@
             [g_sdk JUB_ClearContext:contextID];
             rv = [g_sdk lastError];
             if (JUBR_OK != rv) {
-                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return 0x%2lx.]", rv]];
+                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             }
             else {
                 [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() OK.]"]];
@@ -117,7 +130,7 @@
                                             cfg:cfg];
         rv = [g_sdk lastError];
         if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextEOS() return 0x%2lx.]", rv]];
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextEOS() OK.]"]];
@@ -144,21 +157,17 @@
         return;
     }
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString* address = [g_sdk JUB_GetAddressEOS:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"address(%@/%ld/%ld): %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"address(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -171,20 +180,16 @@
         return;
     }
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *address = [g_sdk JUB_GetAddressEOS:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_TRUE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressEOS() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -197,48 +202,93 @@
         return rv;
     }
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *address = [g_sdk JUB_SetMyAddressEOS:contextID
-                                              path:path];
+                                              path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressEOS() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Set my address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Set my address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
     
     return rv;
 }
 
 
+- (NSString*) inputAmount {
+    
+    __block
+    NSString *amount;
+    
+    __block
+    BOOL isDone = NO;
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(
+        NSString * _Nonnull content,
+        JUBDissAlertCallBack _Nonnull dissAlertCallBack,
+        JUBSetErrorCallBack  _Nonnull setErrorCallBack
+    ) {
+        NSLog(@"content = %@", content);
+        if (nil == content) {
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else if (        [content isEqual:@""]
+                 || [JUBEOSAmount isValid:content
+                                      opt:(JUB_NS_ENUM_EOS_OPT)self.selectedMenuIndex]
+                 ) {
+            //隐藏弹框
+            amount = content;
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else {
+            setErrorCallBack([JUBEOSAmount formatRules:(JUB_NS_ENUM_EOS_OPT)self.selectedMenuIndex]);
+            isDone = NO;
+        }
+    } keyboardType:UIKeyboardTypeDecimalPad];
+    customInputAlert.title = [JUBEOSAmount title:(JUB_NS_ENUM_EOS_OPT)self.selectedMenuIndex];
+    customInputAlert.message = [JUBEOSAmount message];
+    customInputAlert.textFieldPlaceholder = [JUBEOSAmount formatRules:(JUB_NS_ENUM_EOS_OPT)self.selectedMenuIndex];
+    customInputAlert.limitLength = [JUBEOSAmount limitLength];
+    
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
+    
+    return [JUBEOSAmount convertToProperFormat:amount
+                                           opt:(JUB_NS_ENUM_EOS_OPT)self.selectedMenuIndex];
+}
+
+
 - (NSUInteger) tx_proc:(NSUInteger)contextID
+                amount:(NSString*)amount
                   root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
-    switch(self.optCoinType) {
+    switch(self.selectedMenuIndex) {
     default:
         rv = [self transaction_proc:contextID
+                             amount:amount
                                root:root];
         break;
-    }
+    }   // switch(self.selectedMenuIndex) end
     
     return rv;
 }
 
 
 - (NSUInteger) transaction_proc:(NSUInteger)contextID
+                         amount:(NSString*)amount
                            root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
     BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
+    path.change = (JUB_NS_ENUM_BOOL)root["EOS"]["bip32_path"]["change"].asBool();
+    path.addressIndex = root["EOS"]["bip32_path"]["addressIndex"].asUInt();
     
     if (!root["EOS"]["actions"].isArray()) {
         return JUBR_ARGUMENTS_BAD;
@@ -261,6 +311,11 @@
             action.xfer.from  = [NSString stringWithUTF8String:(*it)[sType]["from"].asCString()];
             action.xfer.to    = [NSString stringWithUTF8String:(*it)[sType]["to"].asCString()];
             action.xfer.asset = [NSString stringWithUTF8String:(*it)[sType]["asset"].asCString()];
+            if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+                NSString* asset = [JUBEOSAmount replaceAmount:amount
+                                                        asset:[NSString stringWithFormat:@"%@", action.xfer.asset]];
+                action.xfer.asset = asset;
+            }
             action.xfer.memo  = [NSString stringWithUTF8String:(*it)[sType]["memo"].asCString()];
             break;
         }
@@ -271,6 +326,11 @@
             action.dele.receiver = [NSString stringWithUTF8String:(*it)[sType]["receiver"].asCString()];
             action.dele.netQty   = [NSString stringWithUTF8String:(*it)[sType]["stake_net_quantity"].asCString()];
             action.dele.cpuQty   = [NSString stringWithUTF8String:(*it)[sType]["stake_cpu_quantity"].asCString()];
+            if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+                NSString* asset = [NSString stringWithFormat:@"%@ EOS", amount];
+                action.dele.netQty = asset;
+                action.dele.cpuQty = asset;
+            }
             action.dele.bStake = JUB_NS_ENUM_BOOL::BOOL_NS_TRUE;
             break;
         }
@@ -281,6 +341,11 @@
             action.dele.receiver = [NSString stringWithUTF8String:(*it)[sType]["receiver"].asCString()];
             action.dele.netQty   = [NSString stringWithUTF8String:(*it)[sType]["unstake_net_quantity"].asCString()];
             action.dele.cpuQty   = [NSString stringWithUTF8String:(*it)[sType]["unstake_cpu_quantity"].asCString()];
+            if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+                NSString* asset = [NSString stringWithFormat:@"%@ EOS", amount];
+                action.dele.netQty = asset;
+                action.dele.cpuQty = asset;
+            }
             action.dele.bStake = JUB_NS_ENUM_BOOL::BOOL_NS_FALSE;
             break;
         }
@@ -289,6 +354,10 @@
             action.buyRam = [[BuyRamAction alloc] init];
             action.buyRam.payer    = [NSString stringWithUTF8String:(*it)[sType]["payer"].asCString()];
             action.buyRam.quant    = [NSString stringWithUTF8String:(*it)[sType]["quant"].asCString()];
+            if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+                NSString* asset = [NSString stringWithFormat:@"%@ EOS", amount];
+                action.buyRam.quant = asset;
+            }
             action.buyRam.receiver = [NSString stringWithUTF8String:(*it)[sType]["receiver"].asCString()];
             break;
         }
@@ -297,6 +366,9 @@
             action.sellRam = [[SellRamAction alloc] init];
             action.sellRam.account = [NSString stringWithUTF8String:(*it)[sType]["account"].asCString()];
             action.sellRam.bytes   = [NSString stringWithUTF8String:(*it)[sType]["bytes"].asCString()];
+            if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+                action.sellRam.bytes = amount;
+            }
             break;
         }
         case JUB_NS_EOS_ACTION_TYPE::NS_ITEM_ACTION_TYPE_NS:
@@ -310,7 +382,7 @@
                                            action:actionArray];
     rv = [g_sdk JUB_LastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildActionEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildActionEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildActionEOS() OK.]"]];
@@ -339,7 +411,7 @@
                                            action:actions];
     rv = (long)[g_sdk JUB_LastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionEOS() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionEOS() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionEOS() OK.]"]];

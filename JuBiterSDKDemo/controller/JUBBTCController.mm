@@ -7,6 +7,7 @@
 //
 
 #import "JUBSharedData.h"
+#import "JUBBTCAmount.h"
 
 #import "JUBBTCController.h"
 
@@ -28,18 +29,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.title = @"BTC options";
+    
     self.optItem = JUB_NS_ENUM_MAIN::OPT_BTC;
-
-    self.coinTypeArray = @[
-        BUTTON_TITLE_BTCP2PKH,
-        BUTTON_TITLE_BTCP2WPKH,
-        BUTTON_TITLE_LTC,
-        BUTTON_TITLE_BCH,
-        BUTTON_TITLE_QTUM,
-        BUTTON_TITLE_QTUM_QRC20,
-        BUTTON_TITLE_USDT,
-        BUTTON_TITLE_HCASH
-    ];
     
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
@@ -56,6 +48,21 @@
 }
 
 
+- (NSArray*) subMenu {
+    
+    return @[
+        BUTTON_TITLE_BTCP2PKH,
+        BUTTON_TITLE_BTCP2WPKH,
+        BUTTON_TITLE_LTC,
+        BUTTON_TITLE_BCH,
+        BUTTON_TITLE_QTUM,
+        BUTTON_TITLE_QTUM_QRC20,
+        BUTTON_TITLE_USDT,
+        BUTTON_TITLE_HCASH
+    ];
+}
+
+
 - (void) navRightButtonCallBack {
     
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
@@ -65,34 +72,24 @@
     
     JUBListAlert *listAlert = [JUBListAlert showCallBack:^(NSString *_Nonnull selectedItem) {
         NSLog(@"UNIT selected: %@", selectedItem);
-        JUB_NS_BTC_UNIT_TYPE unit = JUB_NS_BTC_UNIT_TYPE::NS_BTC_UNIT_TYPE_NS;
-        if ([selectedItem isEqual:BUTTON_TITLE_UNIT_BTC]) {
-            unit = JUB_NS_BTC_UNIT_TYPE::NS_BTC;
-        }
-        else if ([selectedItem isEqual:BUTTON_TITLE_UNIT_cBTC]) {
-            unit = JUB_NS_BTC_UNIT_TYPE::NS_cBTC;
-        }
-        else if ([selectedItem isEqual:BUTTON_TITLE_UNIT_mBTC]) {
-            unit = JUB_NS_BTC_UNIT_TYPE::NS_mBTC;
-        }
-        else if ([selectedItem isEqual:BUTTON_TITLE_UNIT_uBTC]) {
-            unit = JUB_NS_BTC_UNIT_TYPE::NS_uBTC;
-        }
-        else if ([selectedItem isEqual:BUTTON_TITLE_UNIT_Satoshi]) {
-            unit = JUB_NS_BTC_UNIT_TYPE::NS_Satoshi;
+        if (!selectedItem) {
+            NSLog(@"JUBBTCController::JUBListAlert canceled");
+            return;
         }
         
+        JUB_NS_BTC_UNIT_TYPE unit = [JUBBTCAmount stringToEnumUnit:selectedItem];
         [sharedData setCoinUnit:unit];
     }];
     
     listAlert.title = @"Please select UNIT:";
     [listAlert addItems:@[
-        BUTTON_TITLE_UNIT_BTC,
-        BUTTON_TITLE_UNIT_cBTC,
-        BUTTON_TITLE_UNIT_mBTC,
-        BUTTON_TITLE_UNIT_uBTC,
-        BUTTON_TITLE_UNIT_Satoshi
+        TITLE_UNIT_BTC,
+        TITLE_UNIT_cBTC,
+        TITLE_UNIT_mBTC,
+        TITLE_UNIT_uBTC,
+        TITLE_UNIT_Satoshi
     ]];
+    [listAlert setTextAlignment:NSTextAlignment::NSTextAlignmentRight];
 }
 
 
@@ -101,7 +98,7 @@
     
     const char* json_file = "";
     JUB_NS_ENUM_COINTYPE_BTC coinType = JUB_NS_ENUM_COINTYPE_BTC::NS_COINBTC;
-    switch ((JUB_NS_ENUM_BTC_COIN)self.optCoinType) {
+    switch ((JUB_NS_ENUM_BTC_COIN)self.selectedMenuIndex) {
     case JUB_NS_ENUM_BTC_COIN::BTN_BTC_P2PKH:
     {
         json_file = JSON_FILE_BTC_44;
@@ -147,13 +144,13 @@
     default:
         json_file = JSON_FILE_HCASH;
         break;
-    }   // switch ((JUB_NS_ENUM_COINTYPE_BTC)self.optCoinType) end
+    }   // switch ((JUB_NS_ENUM_COINTYPE_BTC)self.selectedMenuIndex) end
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%s", json_file]
                                                          ofType:@"json"];
     Json::Value root = readJSON([filePath UTF8String]);
     
-    switch (self.optCoinType) {
+    switch (self.selectedMenuIndex) {
     case JUB_NS_ENUM_BTC_COIN::BTN_HCASH:
     {
         [self HC_test:deviceID
@@ -169,7 +166,7 @@
               coinType:coinType];
         break;
     }   // default end
-    }   // switch (self.optCoinType) end
+    }   // switch (self.selectedMenuIndex) end
 }
 
 
@@ -194,7 +191,7 @@
             [g_sdk JUB_ClearContext:contextID];
             rv = [g_sdk lastError];
             if (JUBR_OK != rv) {
-                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return 0x%2lx.]", rv]];
+                [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             }
             else {
                 [self addMsgData:[NSString stringWithFormat:@"[JUB_ClearContext() OK.]"]];
@@ -222,7 +219,7 @@
                                             cfg:cfg];
         rv = [g_sdk lastError];
         if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextBTC() return 0x%2lx.]", rv]];
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextBTC() OK.]"]];
@@ -253,38 +250,34 @@
     NSString* mainXpub = [g_sdk JUB_GetMainHDNodeBTC:contextID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeBTC() OK.]"]];
     
     [self addMsgData:[NSString stringWithFormat:@"Main xpub(%@): %@.", [sharedData currMainPath], mainXpub]];
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *xpub = [g_sdk JUB_GetHDNodeBTC:contextID
-                                        path:path];
+                                        path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeBTC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"input xpub(%@/%ld/%ld): %@.", [sharedData currMainPath], (long)path.change, (long)path.addressIndex, xpub]];
+    [self addMsgData:[NSString stringWithFormat:@"input xpub(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], xpub]];
     
     NSString *address = [g_sdk JUB_GetAddressBTC:contextID
                                          addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"input address(%@/%ld/%ld): %@.", [sharedData currMainPath], (long)path.change, (long)path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"input address(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -292,21 +285,22 @@
     
     NSUInteger rv = JUBR_ERROR;
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
     
     NSString *address = [g_sdk JUB_GetAddressBTC:contextID
                                          addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_TRUE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressBTC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld%ld) is: %@.", [[JUBSharedData sharedInstance] currMainPath], (long)path.change, (long)path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld%ld) is: %@.", [[JUBSharedData sharedInstance] currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -314,16 +308,17 @@
     
     NSUInteger rv = JUBR_ERROR;
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return rv;
+    }
     
     NSString *address = [g_sdk JUB_SetMyAddressBTC:contextID
                                            addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
-                                              path:path];
+                                              path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressBTC() OK.]"]];
@@ -349,7 +344,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetUnitBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetUnitBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SetUnitBTC() OK.]"]];
@@ -358,30 +353,105 @@
 }
 
 
+- (NSString*) inputAmount {
+    
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return nil;
+    }
+    
+    if (JUB_NS_ENUM_BTC_COIN::BTN_HCASH == [sharedData currCoinType]) {
+        return @"";
+    }
+    
+    JUB_NS_BTC_UNIT_TYPE coinUnit = [sharedData coinUnit];
+    
+    __block
+    NSString *amount = nil;
+    
+    __block
+    BOOL isDone = NO;
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(
+        NSString * _Nonnull content,
+        JUBDissAlertCallBack _Nonnull dissAlertCallBack,
+        JUBSetErrorCallBack  _Nonnull setErrorCallBack
+    ) {
+        NSLog(@"content = %@", content);
+        if (nil == content) {
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else if (        [content isEqual:@""]
+                 || [JUBBTCAmount isValid:content]
+                 ) {
+            //隐藏弹框
+            amount = content;
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else {
+            setErrorCallBack([JUBBTCAmount formatRules]);
+            isDone = NO;
+        }
+    } keyboardType:UIKeyboardTypeDecimalPad];
+    customInputAlert.title = [JUBBTCAmount title:coinUnit];
+    customInputAlert.message = [JUBBTCAmount message];
+    customInputAlert.textFieldPlaceholder = [JUBBTCAmount formatRules];
+    customInputAlert.limitLength = [JUBBTCAmount limitLength];
+    
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
+    
+    // Convert to the smallest unit
+    NSString *smallestUnit;
+    switch ((JUB_NS_ENUM_BTC_COIN)self.selectedMenuIndex) {
+    case JUB_NS_ENUM_BTC_COIN::BTN_QTUM_QRC20:
+    case JUB_NS_ENUM_BTC_COIN::BTN_USDT:
+        smallestUnit = [JUBBTCAmount convertToProperFormat:amount
+                                                       opt:(JUB_NS_ENUM_BTC_COIN)self.selectedMenuIndex];
+        break;
+    default:
+        smallestUnit = [JUBBTCAmount convertToTheSmallestUnit:amount
+                                                        point:@"."
+                                                      decimal:[JUBBTCAmount enumUnitToDecimal:coinUnit]];
+        break;
+    }
+    
+    return smallestUnit;
+}
+
+
 - (NSUInteger) tx_proc:(NSUInteger)contextID
+                amount:(NSString*)amount
                   root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
-    switch((JUB_NS_ENUM_BTC_COIN)self.optCoinType) {
+    switch((JUB_NS_ENUM_BTC_COIN)self.selectedMenuIndex) {
     case JUB_NS_ENUM_BTC_COIN::BTN_BTC_P2PKH:
     case JUB_NS_ENUM_BTC_COIN::BTN_BTC_P2WPKH:
     case JUB_NS_ENUM_BTC_COIN::BTN_LTC:
     case JUB_NS_ENUM_BTC_COIN::BTN_BCH:
     case JUB_NS_ENUM_BTC_COIN::BTN_QTUM:
         rv = [self transaction_proc:contextID
+                             amount:amount
                                root:root];
         break;
     case JUB_NS_ENUM_BTC_COIN::BTN_QTUM_QRC20:
         rv = [self transactionQTUM_proc:contextID
+                                 amount:amount
                                    root:root];
         break;
     case JUB_NS_ENUM_BTC_COIN::BTN_USDT:
         rv = [self transactionUSDT_proc:contextID
+                                 amount:amount
                                    root:root];
         break;
     case JUB_NS_ENUM_BTC_COIN::BTN_HCASH:
         rv = [self transactionHC_proc:contextID
+                               amount:amount
                                  root:root];
         break;
     default:
@@ -467,6 +537,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
 
 
 - (NSUInteger) transaction_proc:(NSUInteger)contextID
+                         amount:(NSString*)amount
                            root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
@@ -474,18 +545,43 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
     NSMutableArray *ins = [NSMutableArray array];
     int inputNumber = root["inputs"].size();
     
+    InputBTC* selfdefInput = [[InputBTC alloc] init];
     for (int i = 0; i < inputNumber; i++) {
         InputBTC* input = JSON2InputBTC(i, root);
         [ins addObject:input];
+        selfdefInput = input;
+    }
+    if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+        selfdefInput.amount = [amount longLongValue];
+        [ins addObject:selfdefInput];
     }
     NSArray* inputs = [NSArray arrayWithArray:ins];
     
     NSMutableArray *outs = [NSMutableArray array];
     int outputNumber = root["outputs"].size();
     
+    OutputBTC *selfdefOutput = [[OutputBTC alloc] init];
     for (int i = 0; i < outputNumber; i++) {
         OutputBTC* output = JSON2OutputBTC(i, root);
+        if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+            output.stdOutput.isChangeAddress = JUB_NS_ENUM_BOOL::BOOL_NS_TRUE;
+        }
+        if (output.stdOutput.isChangeAddress) {
+            NSString* changeAddress = [g_sdk JUB_GetAddressBTC:contextID
+                                                       addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
+                                                          path:output.stdOutput.path
+                                                         bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
+            if (JUBR_OK == [g_sdk lastError]) {
+                output.stdOutput.address = changeAddress;
+            }
+        }
         [outs addObject:output];
+        selfdefOutput = output;
+    }
+    if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+        selfdefOutput.stdOutput.isChangeAddress = JUB_NS_ENUM_BOOL::BOOL_NS_FALSE;
+        selfdefOutput.stdOutput.amount = [amount longLongValue];
+        [outs addObject:selfdefOutput];
     }
     NSArray* outputs = [NSArray arrayWithArray:outs];
     
@@ -502,7 +598,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
     if (   JUBR_OK != rv
         || nullptr == raw
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionBTC() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionBTC() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionBTC() OK.]"]];
@@ -517,11 +613,16 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
 
 
 - (NSUInteger) transactionQTUM_proc:(NSUInteger)contextID
+                             amount:(NSString*)amount
                                root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
     try {
+        NSString* value = [NSString stringWithUTF8String:(char*)root["QRC20_amount"].asCString()];
+        if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+            value = amount;
+        }
         NSArray *qtumouts = [g_sdk JUB_BuildQRC20Outputs:contextID
                                             contractAddr:[NSString stringWithUTF8String:(char*)root["QRC20_contractAddr"].asCString()]
                                                  decimal:root["QRC20_decimal"].asUInt64()
@@ -529,7 +630,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
                                                 gasLimit:root["gasLimit"].asUInt64()
                                                 gasPrice:root["gasPrice"].asUInt64()
                                                       to:[NSString stringWithUTF8String:(char*)root["QRC20_to"].asCString()]
-                                                   value:[NSString stringWithUTF8String:(char*)root["QRC20_amount"].asCString()]];
+                                                   value:value];
         rv = (long)[g_sdk JUB_LastError];
         if (JUBR_OK != rv) {
             [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildQRC20Outputs() return 0x%2lx.]", rv]];
@@ -550,6 +651,15 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         int outputNumber = root["outputs"].size();
         for (int i = 0; i < outputNumber; i++) {
             OutputBTC* output = JSON2OutputBTC(i, root);
+            if (output.stdOutput.isChangeAddress) {
+                NSString* changeAddress = [g_sdk JUB_GetAddressBTC:contextID
+                                                           addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
+                                                              path:output.stdOutput.path
+                                                             bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
+                if (JUBR_OK == [g_sdk lastError]) {
+                    output.stdOutput.address = changeAddress;
+                }
+            }
             [outs addObject:output];
         }
         
@@ -584,6 +694,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
 
 
 - (NSUInteger) transactionUSDT_proc:(NSUInteger)contextID
+                             amount:(NSString*)amount
                                root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
@@ -601,12 +712,25 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         int outputNumber = root["outputs"].size();
         for (int i = 0; i < outputNumber; i++) {
             OutputBTC* output = JSON2OutputBTC(i, root);
+            if (output.stdOutput.isChangeAddress) {
+                NSString* changeAddress = [g_sdk JUB_GetAddressBTC:contextID
+                                                           addrFmt:JUB_NS_ENUM_BTC_ADDRESS_FORMAT::NS_OWN
+                                                              path:output.stdOutput.path
+                                                             bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
+                if (JUBR_OK == [g_sdk lastError]) {
+                    output.stdOutput.address = changeAddress;
+                }
+            }
             [outs addObject:output];
         }
         
+        NSUInteger USDTAmt = root["USDT_amount"].asUInt64();
+        if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+            USDTAmt = [amount longLongValue];
+        }
         NSArray *usdtouts = [g_sdk JUB_BuildUSDTOutputs:contextID
                                                  USDTTo:[NSString stringWithUTF8String:(char*)root["USDT_to"].asCString()]
-                                                 amount:root["USDT_amount"].asUInt64()];
+                                                 amount:USDTAmt];
         rv = (long)[g_sdk JUB_LastError];
         [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildUSDTOutputs() return 0x%2lx.]", rv]];
         if (JUBR_OK != rv) {
@@ -701,6 +825,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         case JUB_NS_ENUM_OPT::TRANSACTION:
         {
             [self transaction_test:contextID
+                            amount:[[JUBSharedData sharedInstance] amount]
                               root:root];
             break;
         }
@@ -740,22 +865,18 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
     
     [self addMsgData:[NSString stringWithFormat:@"Main xpub(%@): %@.", [sharedData currMainPath], mainXpub]];
     
-    BIP32Path *path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
-    
     NSString *xpub = [g_sdk JUB_GetHDNodeHC:contextID
-                                       path:path];
+                                       path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeHC() return 0x%2lx.]", rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeHC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"input xpub(%@/%ld/%ld): %@.", [sharedData currMainPath], (long)path.change, (long)path.addressIndex, xpub]];
+    [self addMsgData:[NSString stringWithFormat:@"input xpub(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], xpub]];
     
     NSString *address = [g_sdk JUB_GetAddressHC:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
@@ -763,18 +884,19 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"input address(%@/%ld/%ld): %@.", [sharedData currMainPath], (long)path.change, (long)path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"input address(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
 - (void) show_address_test_HC:(NSUInteger)contextID {
     
-    BIP32Path* path = [[BIP32Path alloc] init];
-    path.change = (self.change ? JUB_NS_ENUM_BOOL::BOOL_NS_TRUE:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE);
-    path.addressIndex = self.addressIndex;
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
     
     NSString *address = [g_sdk JUB_GetAddressHC:contextID
-                                           path:path
+                                           path:[sharedData currPath]
                                           bShow:JUB_NS_ENUM_BOOL::BOOL_NS_TRUE];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
@@ -782,7 +904,7 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressHC() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld): %@.", [[JUBSharedData sharedInstance] currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld): %@.", [[JUBSharedData sharedInstance] currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -822,6 +944,7 @@ OutputHC* JSON2OutputHC(int i, Json::Value root) {
 
 
 - (NSUInteger) transactionHC_proc:(NSUInteger)contextID
+                           amount:(NSString*)amount
                              root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;

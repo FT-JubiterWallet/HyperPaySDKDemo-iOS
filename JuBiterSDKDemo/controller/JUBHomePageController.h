@@ -1,5 +1,5 @@
 //
-//  JUBHomeController.h
+//  JUBHomePageController.h
 //  JuBiterSDKDemo
 //
 //  Created by panmin on 2020/5/13.
@@ -10,6 +10,10 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
+
+
+#define FLAG_CURR           @"(*)"
+
 
 
 #define BUTTON_TITLE_BLE    @"BLE"
@@ -33,7 +37,7 @@ typedef NS_ENUM(NSInteger, JUB_NS_ENUM_MAIN) {
 };
 
 
-@interface JUBHomeController : JUBCoinTestListBaseController
+@interface JUBHomePageController : JUBListBaseController
 @property (nonatomic, assign) BOOL showDisConnectBLEButton;
 @end
 

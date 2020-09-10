@@ -1,5 +1,5 @@
 //
-//  JUBCoinTestListBaseController.h
+//  JUBListBaseController.h
 //  JuBiterSDKDemo
 //
 //  Created by 张川 on 2020/4/28.
@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "FTConstant.h"
-#import "JUBCoinTestMainView.h"
+#import "JUBMainView.h"
 #import "Tools.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JUBCoinTestListBaseController : UIViewController
+@interface JUBListBaseController : UIViewController
 
 @property (nonatomic, strong) NSArray<JUBButtonModel *> *buttonArray;
 
@@ -21,9 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL showBLEButton;
 
-- (void)addMsgData:(NSString *)msgData;
+@property (nonatomic, copy) NSString *leftNAVButtonTitle;
 
-- (void)initUI;
+@property (nonatomic, copy) NSString *rightNAVButtonTitle;
+
+- (void)addMsgData:(NSString *)msgData;
 
 @end
 

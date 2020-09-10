@@ -7,6 +7,7 @@
 //
 
 #import "JUBSharedData.h"
+#import "JUBTimeOut.h"
 
 #import "JUBCoinController.h"
 
@@ -19,12 +20,13 @@
 
 
 @implementation JUBCoinController
-@synthesize inputAddrView;
 
 - (void) viewDidLoad {
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.title = @"Coin options";
     
     NSArray *buttonTitleArray = @[
         BUTTON_TITLE_TRANSACTION,
@@ -78,37 +80,40 @@
 }
 
 
-//选中币种之后的回调，你这可能用不到这个回调，先开放给你，用不到就可以直接删掉
-- (void) selectCoinType {
-    
-    NSLog(@"JUBBTCController--selectCoinTypeIndex %ld", (long)self.selectCoinTypeIndex);
-    
-    self.optCoinType = (long)self.selectCoinTypeIndex;
-}
-
-
 //测试类型的按钮点击回调
 - (void) selectedTestActionTypeIndex:(NSInteger)index {
     
-    NSLog(@"JUBCoinController--selectedTransmitTypeIndex = %ld, CoinType = %ld, selectedTestActionType = %ld", (long)self.selectedTransmitTypeIndex, (long)self.selectCoinTypeIndex, (long)index);
+    NSLog(@"JUBCoinController--selectedTransmitTypeIndex = %ld, CoinType = %ld, selectedTestActionType = %ld", (long)self.selectedTransmitTypeIndex, (long)self.selectedMenuIndex, (long)index);
     
+    __block
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
         return;
     }
     
+    [sharedData setCurrCoinType:self.selectedMenuIndex];
     self.optIndex = index;
     
     switch (self.optIndex) {
     case JUB_NS_ENUM_OPT::TRANSACTION:
     {
+        NSString *amount = [self inputAmount];
+        if (nil == amount) {
+            [self addMsgData:[NSString stringWithFormat:@"Input transaction amount CANCELED."]];
+            break;
+        }
+        else if (NSComparisonResult::NSOrderedSame == [amount compare:@""]) {
+            [self addMsgData:[NSString stringWithFormat:@"The transaction amount using default values."]];
+        }
+        [sharedData setAmount:amount];
+        
         switch (self.selectedTransmitTypeIndex) {
         case JUB_NS_ENUM_DEV_TYPE::SEG_BLE:
         {
             DeviceTypeInfo* info = [g_sdk JUB_GetDeviceType:[sharedData currDeviceID]];
             NSUInteger rv = [g_sdk lastError];
             if (JUBR_OK != rv) {
-                [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceType() return 0x%2lx.]", rv]];
+                [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceType() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
                 return;
             }
             [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceType() OK.]"]];
@@ -133,12 +138,14 @@
     case JUB_NS_ENUM_OPT::SHOW_ADDRESS:
     case JUB_NS_ENUM_OPT::SET_MY_ADDRESS:
     {
-        inputAddrView = [JUBInputAddressView showCallBack:^(NSInteger change, NSInteger address) {
+        JUBInputAddressView *inputAddrView = [JUBInputAddressView showCallBack:^(NSInteger change, NSInteger address) {
             
             NSLog(@"showCallBack change = %ld, address = %ld", (long)change, (long)address);
             
-            self.change = change;
-            self.addressIndex = address;
+            BIP32Path *path = [[BIP32Path alloc] init];
+            path.change = (0 == change) ? JUB_NS_ENUM_BOOL::BOOL_NS_FALSE : JUB_NS_ENUM_BOOL::BOOL_NS_TRUE;
+            path.addressIndex = address;
+            [sharedData setCurrPath:path];
             
             switch (self.selectedTransmitTypeIndex) {
             case JUB_NS_ENUM_DEV_TYPE::SEG_BLE:
@@ -190,7 +197,7 @@
     }
     case JUB_NS_ENUM_OPT::SET_TIMEOUT:
     {
-        [self set_time_out:contextID];
+        [self set_time_out_test:contextID];
         break;
     }
     case JUB_NS_ENUM_OPT::SET_MY_ADDRESS:
@@ -200,7 +207,12 @@
     }
     case JUB_NS_ENUM_OPT::TRANSACTION:
     {
+        if (JUBR_OK != [self verify_user:contextID]) {
+            break;
+        }
+        
         [self transaction_test:contextID
+                        amount:[[JUBSharedData sharedInstance] amount]
                           root:root];
         break;
     }
@@ -228,8 +240,8 @@
         return;
     }
     
-    [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
-        if (nil == pin) {
+    [JUBPinAlert showInputPinCallBack:^(NSString * _Nonnull pin) {
+        if (!pin) {
             [self cancel_virtualKeyboard:contextID];
             rv = JUBR_USER_CANCEL;
             return;
@@ -261,16 +273,60 @@
 }
 
 
-- (NSUInteger) set_time_out:(NSUInteger)contextID {
+- (NSUInteger) set_time_out_test:(NSUInteger)contextID {
     
+    __block
     NSUInteger rv = JUBR_ERROR;
     
-    NSUInteger timeout = 600;
+    __block
+    BOOL isDone = NO;
+    
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(
+        NSString * _Nonnull content,
+        JUBDissAlertCallBack _Nonnull dissAlertCallBack,
+        JUBSetErrorCallBack  _Nonnull setErrorCallBack
+    ) {
+        NSLog(@"content = %@", content);
+        if (nil == content) {
+            rv = JUBR_USER_CANCEL;
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else if ([JUBTimeOut isValid:content]) {
+            //隐藏弹框
+            rv = [self set_time_out:contextID
+                            timeout:[content intValue]];
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else {
+            setErrorCallBack([JUBTimeOut errorMsg]);
+            isDone = NO;
+        }
+    } keyboardType:UIKeyboardTypeDecimalPad];
+    customInputAlert.title = [JUBTimeOut title];
+    customInputAlert.message = [JUBTimeOut formatRules];
+    customInputAlert.textFieldPlaceholder = [JUBTimeOut formatRules];
+    customInputAlert.limitLength = [JUBTimeOut limitLength];
+    
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
+    
+    return rv;
+}
+
+
+- (NSUInteger) set_time_out:(NSUInteger)contextID
+                    timeout:(NSUInteger)timeout {
+    
+    NSUInteger rv = JUBR_ERROR;
     [g_sdk JUB_SetTimeOut:contextID
                   timeout:timeout];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetTimeOut() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetTimeOut() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SetTimeOut() OK.]"]];
@@ -279,15 +335,20 @@
 }
 
 
-- (void) transaction_test:(NSUInteger)contextID
-                     root:(Json::Value)root {
+- (NSString*) inputAmount {
+    
+    return nil;
+}
+
+
+- (NSUInteger) verify_user:(NSUInteger)contextID {
     
     __block
     NSUInteger rv = JUBR_ERROR;
     
     JUBSharedData *sharedData = [JUBSharedData sharedInstance];
     if (nil == sharedData) {
-        return;
+        return rv;
     }
     
     switch ([sharedData deviceType]) {
@@ -299,6 +360,13 @@
         case JUB_NS_ENUM_VERIFY_MODE::FGPT:
         {
             JUBListAlert *listAlert = [JUBListAlert showCallBack:^(NSString *_Nonnull selectedItem) {
+                if (!selectedItem) {
+                    NSLog(@"JUBCoinController::JUBListAlert canceled");
+                    rv = JUBR_USER_CANCEL;
+                    isDone = YES;
+                    return;
+                }
+                
                 NSLog(@"Verify PIN mode selected: %@", selectedItem);
                 if ([selectedItem isEqual:BUTTON_TITLE_USE_VK]) {
                     rv = [self show_virtualKeyboard:contextID];
@@ -307,11 +375,11 @@
                         return;
                     }
                     
-                    [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
-                        if (nil == pin) {
+                    [JUBPinAlert showInputPinCallBack:^(NSString * _Nonnull pin) {
+                        if (!pin) {
                             [self cancel_virtualKeyboard:contextID];
-                            isDone = YES;
                             rv = JUBR_USER_CANCEL;
+                            isDone = YES;
                             return;
                         }
                         [sharedData setUserPin:pin];
@@ -357,6 +425,7 @@
                 BUTTON_TITLE_USE_VK,
                 BUTTON_TITLE_USE_FGPT
             ]];
+            [listAlert setTextAlignment:NSTextAlignment::NSTextAlignmentLeft];
             break;
         }   // case JUB_NS_ENUM_VERIFY_MODE::FGPT end
         case JUB_NS_ENUM_VERIFY_MODE::VKPIN:
@@ -367,11 +436,11 @@
                 break;
             }
             
-            [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
+            [JUBPinAlert showInputPinCallBack:^(NSString * _Nonnull pin) {
                 if (nil == pin) {
                     [self cancel_virtualKeyboard:contextID];
-                    isDone = YES;
                     rv = JUBR_USER_CANCEL;
+                    isDone = YES;
                     return;
                 }
                 [sharedData setUserPin:pin];
@@ -405,27 +474,36 @@
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                      beforeDate:[NSDate distantFuture]];
         }
-        
-        if (JUBR_OK != rv) {
-            return;
-        }
-        
-        JUBAlertView *alertView = [JUBAlertView showMsg:@"Transaction in progress..."];
-        {
-            rv = [self tx_proc:contextID
-                          root:root];
-            
-            [alertView dismiss];
-        }
         break;
     }   // case JUB_NS_ENUM_DEV_TYPE::SEG_BLE end
     default:
         break;
     }   // switch ([sharedData deviceType]) end
+    
+    return rv;
+}
+
+
+- (void) transaction_test:(NSUInteger)contextID
+                   amount:(NSString*)amount
+                     root:(Json::Value)root {
+    
+    __block
+    NSUInteger rv = JUBR_ERROR;
+    
+    JUBAlertView *alertView = [JUBAlertView showMsg:@"Transaction in progress..."];
+    {
+        rv = [self tx_proc:contextID
+                    amount:amount
+                      root:root];
+        
+        [alertView dismiss];
+    }
 }
 
 
 - (NSUInteger) tx_proc:(NSUInteger)contextID
+                amount:(NSString*)amount
                   root:(Json::Value)root {
     
     return JUBR_IMPL_NOT_SUPPORT;
@@ -439,7 +517,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_ShowVirtualPwd() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_ShowVirtualPwd() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_ShowVirtualPwd() OK.]"]];
@@ -455,7 +533,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_CancelVirtualPwd() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_CancelVirtualPwd() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_CancelVirtualPwd() OK.]"]];
@@ -466,11 +544,17 @@
 
 - (NSUInteger) verify_pin:(NSUInteger)contextID {
     
+    
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return JUBR_ERROR;
+    }
+    
     NSUInteger retry = [g_sdk JUB_VerifyPIN:contextID
                                      pinMix:[[JUBSharedData sharedInstance] userPin]];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN(%lu) return 0x%2lx.]", retry, rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN(%lu) return %@ (0x%2lx).]", retry, [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyPIN() OK.]"]];
@@ -484,7 +568,7 @@
     NSUInteger retry = [g_sdk JUB_VerifyFingerprint:contextID];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyFingerprint(%lu) return 0x%2lx.]", retry, rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyFingerprint(%lu) return %@ (0x%2lx).]", retry, [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_VerifyFingerprint() OK.]"]];

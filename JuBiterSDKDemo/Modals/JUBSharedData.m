@@ -27,11 +27,18 @@ static JUBSharedData *_sharedDataInstance;
         }
         
         _optItem = 0;
+        
         _userPin = nil;
         _neoPin = nil;
+        
         _verifyMode = VERIFY_MODE_ITEM;
         _deviceType = SEG_BLE;
         _coinUnit = NS_BTC_UNIT_TYPE_NS;
+        _comMode = NS_COMMODE_NS_ITEM;
+        _deviceClass = NS_DEVICE_NS_ITEM;
+        
+        _currPath = [[BIP32Path alloc] init];
+        
         _currDeviceID = 0;
         _currContextID = 0;
     }
@@ -40,7 +47,7 @@ static JUBSharedData *_sharedDataInstance;
 }
 
 
-+ (JUBSharedData  *) sharedInstance {
++ (JUBSharedData *) sharedInstance {
     
     if (!_sharedDataInstance) {
         _sharedDataInstance = [[JUBSharedData alloc] init];
@@ -48,5 +55,6 @@ static JUBSharedData *_sharedDataInstance;
     
     return _sharedDataInstance;
 }
+
 
 @end

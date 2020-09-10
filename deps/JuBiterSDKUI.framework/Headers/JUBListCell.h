@@ -1,5 +1,5 @@
 //
-//  JUBBLEDeviceListCell.h
+//  JUBListCell.h
 //  JuBiterSDKDemo
 //
 //  Created by 张川 on 2020/5/14.
@@ -10,9 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JUBBLEDeviceListCell : UITableViewCell
+@interface JUBListCell : UITableViewCell
 
-@property (nonatomic, copy) NSString *deviceName;
+@property (nonatomic, copy) NSString *content;
+
+@property (nonatomic, assign) NSTextAlignment textAlignment;
 
 @end
 

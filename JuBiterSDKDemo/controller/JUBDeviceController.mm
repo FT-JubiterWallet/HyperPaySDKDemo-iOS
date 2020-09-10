@@ -6,9 +6,10 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
+#import "JUBErrorCode.h"
 #import "JUBSharedData.h"
 
-#import "JUBHomeController.h"
+#import "JUBHomePageController.h"
 #import "JUBDeviceController.h"
 
 #import "JubSDKCore/JubSDKCore+DEV.h"
@@ -27,6 +28,8 @@
     
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.title = @"Device options";
     
     self.optItem = JUB_NS_ENUM_MAIN::OPT_DEVICE;
     
@@ -59,7 +62,12 @@
 //测试类型的按钮点击回调
 - (void) selectedTestActionTypeIndex:(NSInteger)index {
     
-    NSLog(@"JUBDeviceController--selectedTransmitTypeIndex = %ld, Type = %ld, selectedTestActionType = %ld", (long)self.selectedTransmitTypeIndex, (long)self.selectCoinTypeIndex, (long)index);
+    NSLog(@"JUBDeviceController--selectedTransmitTypeIndex = %ld, Type = %ld, selectedTestActionTypeIndex = %ld", (long)self.selectedTransmitTypeIndex, (long)self.selectedMenuIndex, (long)index);
+    
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
     
     self.optIndex = index;
     
@@ -134,7 +142,7 @@
     NSString *percent = [g_sdk JUB_QueryBattery:deviceID];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_QueryBattery() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_QueryBattery() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_QueryBattery() OK.]"]];
@@ -148,7 +156,7 @@
     DeviceInfo *info = [g_sdk JUB_GetDeviceInfo:deviceID];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceInfo() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceInfo() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceInfo() OK.]"]];
@@ -167,7 +175,7 @@
     NSString* appList = [g_sdk JUB_EnumApplets:deviceID];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumApplets() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumApplets() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumApplets() OK.]"]];
@@ -181,7 +189,7 @@
         char* version;
         auto rv = JUB_GetAppletVersion(deviceID, (char*)appID.c_str(), &version);
         if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAppletVersion return 0x%2lx.]", rv]];
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAppletVersion return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAppletVersion() OK.]"]];
@@ -192,7 +200,7 @@
     
     NSString* coinList = [g_sdk Jub_EnumSupportCoins:deviceID];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[Jub_EnumSupportCoins() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[Jub_EnumSupportCoins() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[Jub_EnumSupportCoins() OK.]"]];
@@ -206,7 +214,7 @@
     NSString* cert = [g_sdk JUB_GetDeviceCert:deviceID];
     NSUInteger rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceCert() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceCert() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetDeviceCert() OK.]"]];

@@ -6,7 +6,7 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
-#import "JUBDetailBaseController.h"
+#import "JUBSubPageController.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, JUB_NS_ENUM_DEV_OPT) {
 };
 
 
-@interface JUBDeviceController : JUBDetailBaseController
+@interface JUBDeviceController : JUBSubPageController
 @end
 
 NS_ASSUME_NONNULL_END

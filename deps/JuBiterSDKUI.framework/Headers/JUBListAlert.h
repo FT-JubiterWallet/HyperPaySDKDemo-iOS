@@ -10,13 +10,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^JUBSelectCellCallBackBlock)(NSString *selectedItem);
+typedef void (^JUBSelectCellCallBackBlock)(NSString * _Nullable selectedItem);
+
+typedef void (^JUBDeleteCellCallBackBlock)(NSString * _Nullable deletedItem);
 
 @interface JUBListAlert : UIView
 
 + (JUBListAlert *)showCallBack:(JUBSelectCellCallBackBlock)selectCellCallBackBlock;
 
 @property (nonatomic, copy) NSString *title;
+
+//NSTextAlignmentLeft  NSTextAlignmentCenter  NSTextAlignmentRight
+@property (nonatomic, assign) NSTextAlignment textAlignment;
 
 //单个添加内容
 - (void)addItem:(NSString *)item;
@@ -29,6 +34,8 @@ typedef void (^JUBSelectCellCallBackBlock)(NSString *selectedItem);
 
 //批量移除内容
 - (void)removeAllItems;
+
+@property (nonatomic, copy) JUBDeleteCellCallBackBlock deleteCellCallBackBlock;
 
 @end
 

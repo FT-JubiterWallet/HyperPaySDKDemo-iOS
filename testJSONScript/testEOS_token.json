@@ -8,12 +8,12 @@
         "actions" : [
         {
             "type" : 0,
-            "currency" : "eosio.token",
+            "currency" : "metpacktoken",
             "name" : "transfer",
             "0" : {
                 "from" : "abcdenero123",
                 "to" : "gsy123451111",
-                "asset" : "14.2850 EOS",
+                "asset" : "14.285 MPT",
                 "memo" : "@gmail.com"
             }
         }],

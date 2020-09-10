@@ -6,6 +6,7 @@
 //  Copyright © 2020 JuBiter. All rights reserved.
 //
 
+#import "JUBErrorCode.h"
 #import "JUBSharedData.h"
 
 #import "JUBFgptMgrController.h"
@@ -18,31 +19,69 @@
 @implementation JUBFgptMgrController
 
 - (void) viewDidLoad {
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    NSUInteger deviceID = [[JUBSharedData sharedInstance] currDeviceID];
-    JUB_NS_ENUM_BOOL b = [g_sdk JUB_IsBootLoader:deviceID];
-    NSUInteger rv = [g_sdk lastError];
-    if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return 0x%2lx.]", rv]];
-        return;
-    }
-    [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return OK.]"]];
-    
-    if (b) {
-        [self addMsgData:[NSString stringWithFormat:@"[Is in main SE.]"]];
-    }
-    else {
-        [self addMsgData:[NSString stringWithFormat:@"[Isn't in main SE.]"]];
-    }
-    
-    //这个fingerArray可以任意时候向他赋值,界面会自动更新
-    if (JUBR_OK != [self enum_fgpt_test:deviceID]) {
-        [self setFingerArray:nil];
-    }
+    self.title = @"Fingerprint Management";
     
     self.navRightButtonTitle = @"Verify";
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSUInteger deviceID = [[JUBSharedData sharedInstance] currDeviceID];
+        JUB_NS_ENUM_BOOL b = [g_sdk JUB_IsBootLoader:deviceID];
+        NSUInteger rv = [g_sdk lastError];
+        if (JUBR_OK != rv) {
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+            return;
+        }
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return OK.]"]];
+        
+        if (b) {
+            [self addMsgData:[NSString stringWithFormat:@"[Is in main SE.]"]];
+        }
+        else {
+            [self addMsgData:[NSString stringWithFormat:@"[Isn't in main SE.]"]];
+        }
+        
+        //这个fingerArray可以任意时候向他赋值,界面会自动更新
+        if (JUBR_OK != [self enum_fgpt_test:deviceID]) {
+            [self setFingerArray:nil];
+        }
+    });
+}
+
+
+- (void) dealloc {
+    
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return;
+    }
+    
+    NSUInteger deviceID = [sharedData currDeviceID];
+    if (!deviceID) {
+        JUB_NS_ENUM_BOOL b = [g_sdk JUB_IsBootLoader:deviceID];
+        NSUInteger rv = [g_sdk lastError];
+        if (JUBR_OK != rv) {
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
+            return;
+        }
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_IsBootLoader() return OK.]"]];
+        
+        if (b) {
+            [self addMsgData:[NSString stringWithFormat:@"[Is in main SE.]"]];
+        }
+        else {
+            [self addMsgData:[NSString stringWithFormat:@"[Isn't in main SE.]"]];
+        }
+    }
 }
 
 
@@ -76,7 +115,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityVerifyPIN(%lu) return 0x%2lx.]", retry, rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityVerifyPIN(%lu) return %@ (0x%2lx).]", retry, [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityVerifyPIN() OK.]"]];
@@ -92,7 +131,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityShowNineGrids() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityShowNineGrids() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityShowNineGrids() OK.]"]];
@@ -108,7 +147,7 @@
     if (   JUBR_OK               != rv
 //        && JUBR_IMPL_NOT_SUPPORT != rv
         ) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityCancelNineGrids() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityCancelNineGrids() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_IdentityCancelNineGrids() OK.]"]];
@@ -128,38 +167,45 @@
         return rv;
     }
     
+    __block
+    BOOL isDone = NO;
+    
 //    JUBListAlert *listAlert = [JUBListAlert showCallBack:^(NSString *_Nonnull selectedItem) {
+//        if (!selectedItem) {
+//            NSLog(@"JUBFgptMgrController::JUBListAlert canceled");
+//            rv = JUBR_USER_CANCEL;
+//            isDone = YES;
+//            return;
+//        }
+//
 //        if ([selectedItem isEqual:BUTTON_TITLE_VIA_FGPT]
 //            ) {
 //            dispatch_async(dispatch_get_global_queue(0, 0), ^{
 //
 //                __block
 //                JUBAlertView *alertView;
-//
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        alertView = [JUBAlertView showMsg:@"Identity verification via fgpt in progress..."];
-//                    });
-//
+//                alertView = [JUBAlertView showMsg:@"Identity verification via fgpt in progress..."];
+//                {
 //                    rv = [self identity_verify:deviceID
 //                                          mode:JUB_NS_ENUM_IDENTITY_VERIFY_MODE::NS_VIA_FPGT];
 //
-//                    dispatch_async(dispatch_get_main_queue(), ^{
 //                        [alertView dismiss];
-//                    });
+//                }
+//                isDone = YES;
 //            }); // dispatch_async(dispatch_get_global_queue(0, 0), ^ end
 //        }
 //        else if ([selectedItem isEqual:BUTTON_TITLE_VIA_9GRIDS]) {
-
             rv = [self identity_showNineGrids:deviceID];
             if (JUBR_OK != rv) {
+                isDone = YES;
                 return rv;
             }
             
-            [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) {
-                
-                if (nil == pin) {
+            [JUBPinAlert showInputPinCallBack:^(NSString * _Nonnull pin) {
+                if (!pin) {
                     [self identity_cancelNineGrids:deviceID];
                     rv = JUBR_USER_CANCEL;
+                    isDone = YES;
                     return;
                 }
                 [sharedData setUserPin:pin];
@@ -168,11 +214,12 @@
                                          mode:JUB_NS_ENUM_IDENTITY_VERIFY_MODE::NS_VIA_9GRIDS
                                           pin:pin];
                 if (JUBR_OK != rv) {
+                    isDone = YES;
                     return;
                 }
-            }]; // [JUBPinAlertView showInputPinAlert:^(NSString * _Nonnull pin) end
+                isDone = YES;
+            }]; // [JUBPinAlert showInputPinCallBack:^(NSString * _Nonnull pin) end
 //        }   // if ([selectedItem isEqual:BUTTON_TITLE_VIA_9GRIDS]) end
-//
 //    }]; // JUBListAlert *listAlert end
 //
 //    listAlert.title = @"Please select mode:";
@@ -180,6 +227,12 @@
 //        BUTTON_TITLE_VIA_9GRIDS,
 //        BUTTON_TITLE_VIA_FGPT
 //    ]];
+//    [listAlert setTextAlignment:NSTextAlignment::NSTextAlignmentLeft];
+
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
     
     return rv;
 }
@@ -192,16 +245,14 @@
     NSString *fgptList = [g_sdk JUB_EnumFingerprint:deviceID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumFingerprint() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumFingerprint() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_EnumFingerprint() OK.]"]];
     
     [self addMsgData:[NSString stringWithFormat:@"FingerprintIDs are: %@.", fgptList]];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self setFingerArray:[fgptList componentsSeparatedByString:@" "]];
-    });
+    [self setFingerArray:[fgptList componentsSeparatedByString:@" "]];
     
     return rv;
 }
@@ -222,7 +273,7 @@
                                                 fgptID:assignedID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnrollFingerprint() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_EnrollFingerprint() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return FgptEnrollResult{info, rv};
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_EnrollFingerprint() OK.]"]];
@@ -240,7 +291,7 @@
     [g_sdk JUB_EraseFingerprint:deviceID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_EraseFingerprint() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_EraseFingerprint() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_EraseFingerprint() OK.]"]];
@@ -258,7 +309,7 @@
                           fgptID:fgptID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_DeleteFingerprint() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_DeleteFingerprint() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_DeleteFingerprint() OK.]"]];
@@ -269,7 +320,7 @@
 
 #pragma mark - 回调子类方法
 //导航栏右边按钮点击回调，重写该方法可以接管点击按钮的响应
-- (void)navRightButtonCallBack {
+- (void) navRightButtonCallBack {
     
     if (JUBR_OK != [self identity_verify_test:[[JUBSharedData sharedInstance] currDeviceID]]) {
         return;
@@ -337,8 +388,6 @@
             });
             
             times = result.enrollInfo.times;
-            
-            NSLog(@"for-enrollInfo.nextIndex = %ld.", result.enrollInfo.nextIndex);
             fgptIndex = result.enrollInfo.nextIndex;
             fgptID    = result.enrollInfo.modalityID;
             result = [self enroll_fgpt_test:deviceID

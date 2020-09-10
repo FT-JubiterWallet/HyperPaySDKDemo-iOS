@@ -1,5 +1,5 @@
 //
-//  JUBDetailBaseController.mm
+//  JUBSubPageController.mm
 //  JuBiterSDKDemo
 //
 //  Created by panmin on 2020/5/9.
@@ -11,7 +11,7 @@
 #import "JUBScanDeviceInfo.h"
 #import "JUBNotification.h"
 
-#import "JUBDetailBaseController.h"
+#import "JUBSubPageController.h"
 
 #pragma mark - BLE 通讯库寻卡回调
 int BLEReadFuncCallBack(unsigned long int devHandle, unsigned char* data, unsigned int dataLen) {
@@ -50,12 +50,12 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
 }
 
 
-@interface JUBDetailBaseController ()
+@interface JUBSubPageController ()
 
 @end
 
 
-@implementation JUBDetailBaseController
+@implementation JUBSubPageController
 //@synthesize selfClass;
 @synthesize optItem;
 
@@ -96,7 +96,7 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
         return;
     }
     
-//    JUBDetailBaseController *selfClass = (JUBDetailBaseController*)data.selfClass;
+//    JUBSubPageController *selfClass = (JUBSubPageController*)data.selfClass;
     
     switch ([sharedData optItem]) {
     case JUB_NS_ENUM_MAIN::OPT_DEVICE:

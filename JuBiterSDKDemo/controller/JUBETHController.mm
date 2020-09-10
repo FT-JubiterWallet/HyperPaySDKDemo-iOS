@@ -13,6 +13,7 @@
 #import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+COIN_ETH.h"
 
+#import "JUBETHAmount.h"
 
 @interface JUBETHController ()
 
@@ -27,9 +28,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.optItem = JUB_NS_ENUM_MAIN::OPT_ETH;
+    self.title = @"ETH options";
     
-    self.coinTypeArray = @[
+    self.optItem = JUB_NS_ENUM_MAIN::OPT_ETH;
+}
+
+
+- (NSArray*) subMenu {
+    
+    return @[
         BUTTON_TITLE_ETH,
         BUTTON_TITLE_ETH_ERC20,
 //        BUTTON_TITLE_ETC
@@ -41,7 +48,7 @@
 - (void) CoinETHOpt:(NSUInteger)deviceID {
     
     const char* json_file = "";
-    switch (self.optCoinType) {
+    switch (self.selectedMenuIndex) {
     case JUB_NS_ENUM_ETH_COIN::BTN_ETH:
     {
         json_file = JSON_FILE_ETH;
@@ -52,14 +59,14 @@
         json_file = JSON_FILE_ETH;
         break;
     }
-    case JUB_NS_ENUM_ETH_COIN::BTN_ECH:
+    case JUB_NS_ENUM_ETH_COIN::BTN_ETC:
     {
-        json_file = JSON_FILE_ECH;
+        json_file = JSON_FILE_ETC;
         break;
     }
     default:
         break;
-    }   // switch (self.optCoinType) end
+    }   // switch (self.selectedMenuIndex) end
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"%s", json_file]
                                                          ofType:@"json"];
@@ -93,7 +100,7 @@
                                             cfg:cfg];
         rv = [g_sdk lastError];
         if (JUBR_OK != rv) {
-            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextETH() return 0x%2lx.]", rv]];
+            [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_CreateContextETH() OK.]"]];
@@ -124,62 +131,58 @@
                                             format:NS_HEX];
     rv = (long)[g_sdk JUB_LastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"MainXpub in hex format: %@.", pubkey]];
+    [self addMsgData:[NSString stringWithFormat:@"MainXpub(%@) in hex format: %@.", [sharedData currMainPath], pubkey]];
     
     pubkey = [g_sdk JUB_GetMainHDNodeETH:contextID
                                   format:NS_XPUB];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetMainHDNodeETH() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"MainXpub in xpub format: %@.", pubkey]];
-    
-    BIP32Path* path = [[BIP32Path alloc] init];
-    path.change = JUB_NS_ENUM_BOOL(self.change);
-    path.addressIndex = (NSInteger)self.addressIndex;
+    [self addMsgData:[NSString stringWithFormat:@"MainXpub(%@) in xpub format: %@.", [sharedData currMainPath], pubkey]];
     
     pubkey = [g_sdk JUB_GetHDNodeETH:contextID
                               format:NS_HEX
-                                path:path];
+                                path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"pubkey(%ld/%ld) in hex format: %@.", path.change, path.addressIndex, pubkey]];
+    [self addMsgData:[NSString stringWithFormat:@"pubkey(%@/%ld/%ld) in hex format: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], pubkey]];
     
     pubkey = [g_sdk JUB_GetHDNodeETH:contextID
                               format:NS_XPUB
-                                path:path];
+                                path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetHDNodeETH() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"pubkey(%ld/%ld) in xpub format: %@.", path.change, path.addressIndex, pubkey]];
+    [self addMsgData:[NSString stringWithFormat:@"pubkey(%@/%ld/%ld) in xpub format: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], pubkey]];
     
     NSString* address = [g_sdk JUB_GetAddressETH:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_FALSE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() OK.]"]];
     
-    [self addMsgData:[NSString stringWithFormat:@"address(%ld/%ld): %@.", path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"address(%@/%ld/%ld): %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -192,20 +195,16 @@
         return;
     }
     
-    BIP32Path* path = [[BIP32Path alloc] init];
-    path.change = JUB_NS_ENUM_BOOL(self.change);
-    path.addressIndex = (NSInteger)self.addressIndex;
-    
     NSString *address = [g_sdk JUB_GetAddressETH:contextID
-                                            path:path
+                                            path:[sharedData currPath]
                                            bShow:JUB_NS_ENUM_BOOL::BOOL_NS_TRUE];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAddressETH() OK.]"]];
-    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], path.change, path.addressIndex, address]];
+    [self addMsgData:[NSString stringWithFormat:@"Show address(%@/%ld/%ld) is: %@.", [sharedData currMainPath], [[sharedData currPath] change], [[sharedData currPath] addressIndex], address]];
 }
 
 
@@ -213,15 +212,16 @@
     
     NSUInteger rv = JUBR_ERROR;
     
-    BIP32Path* path = [[BIP32Path alloc] init];
-    path.change = JUB_NS_ENUM_BOOL(self.change);
-    path.addressIndex = (NSInteger)self.addressIndex;
+    JUBSharedData *sharedData = [JUBSharedData sharedInstance];
+    if (nil == sharedData) {
+        return rv;
+    }
     
     NSString *address = [g_sdk JUB_SetMyAddressETH:contextID
-                                              path:path];
+                                              path:[sharedData currPath]];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SetMyAddressETH() OK.]"]];
@@ -232,27 +232,77 @@
 }
 
 
+- (NSString*) inputAmount {
+    
+    __block
+    NSString *amount;
+    
+    __block
+    BOOL isDone = NO;
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(
+        NSString * _Nonnull content,
+        JUBDissAlertCallBack _Nonnull dissAlertCallBack,
+        JUBSetErrorCallBack  _Nonnull setErrorCallBack
+    ) {
+        NSLog(@"content = %@", content);
+        if (nil == content) {
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else if (        [content isEqual:@""]
+                 || [JUBETHAmount isValid:content]
+                 ) {
+            //隐藏弹框
+            amount = content;
+            isDone = YES;
+            dissAlertCallBack();
+        }
+        else {
+            setErrorCallBack([JUBETHAmount formatRules]);
+            isDone = NO;
+        }
+    } keyboardType:UIKeyboardTypeDecimalPad];
+    customInputAlert.title = [JUBETHAmount title:(JUB_NS_ENUM_ETH_COIN)self.selectedMenuIndex];
+    customInputAlert.message = [JUBETHAmount message];
+    customInputAlert.textFieldPlaceholder = [JUBETHAmount formatRules];
+    customInputAlert.limitLength = [JUBETHAmount limitLength];
+    
+    while (!isDone) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate distantFuture]];
+    }
+    
+    // Convert to the smallest unit
+    return [JUBETHAmount convertToProperFormat:amount
+                                           opt:(JUB_NS_ENUM_ETH_COIN)self.selectedMenuIndex];
+}
+
+
 - (NSUInteger) tx_proc:(NSUInteger)contextID
+                amount:(NSString*)amount
                   root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
     
-    switch(self.optCoinType) {
+    switch(self.selectedMenuIndex) {
     case JUB_NS_ENUM_ETH_COIN::BTN_ETH_ERC20:
         rv = [self transactionERC20_proc:contextID
+                                  amount:amount
                                     root:root];
         break;
     default:
         rv = [self transaction_proc:contextID
+                             amount:amount
                                root:root];
         break;
-    }
+    }   // switch(self.selectedMenuIndex) end
     
     return rv;
 }
 
 
 - (NSUInteger) transaction_proc:(NSUInteger)contextID
+                         amount:(NSString*)amount
                            root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
@@ -266,6 +316,9 @@
     NSUInteger gasLimit = root["ETH"]["gasLimit"].asUInt();//.asDouble();
     NSString* gasPriceInWei = [NSString stringWithUTF8String:(char*)root["ETH"]["gasPriceInWei"].asCString()];
     NSString* valueInWei = [NSString stringWithUTF8String:(char*)root["ETH"]["valueInWei"].asCString()];
+    if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+        valueInWei = amount;
+    }
     NSString* to = [NSString stringWithUTF8String:(char*)root["ETH"]["to"].asCString()];
     NSString* data = [NSString stringWithUTF8String:(char*)root["ETH"]["data"].asCString()];
     
@@ -279,7 +332,7 @@
                                             input:data];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() OK.]"]];
@@ -295,6 +348,7 @@
 
 //ERC-20 Test
 - (NSUInteger) transactionERC20_proc:(NSUInteger)contextID
+                              amount:(NSString*)amount
                                 root:(Json::Value)root {
     
     NSUInteger rv = JUBR_ERROR;
@@ -305,6 +359,9 @@
     NSString* to = [NSString stringWithUTF8String:(char*)root["ERC20"]["contract_address"].asCString()];
     NSString* token_to = [NSString stringWithUTF8String:(char*)root["ERC20"]["token_to"].asCString()];
     NSString* token_value = [NSString stringWithUTF8String:(char*)root["ERC20"]["token_value"].asCString()];
+    if (NSComparisonResult::NSOrderedSame != [amount compare:@""]) {
+        token_value = amount;
+    }
     
     NSString* abi = [g_sdk JUB_BuildERC20AbiETH:contextID
                                       tokenName:tokenName
@@ -314,7 +371,7 @@
                                      tokenValue:token_value];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildERC20AbiETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildERC20AbiETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_BuildERC20AbiETH() OK.]"]];
@@ -341,7 +398,7 @@
                                             input:abi];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
-        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() return 0x%2lx.]", rv]];
+        [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
         return rv;
     }
     [self addMsgData:[NSString stringWithFormat:@"[JUB_SignTransactionETH() OK.]"]];

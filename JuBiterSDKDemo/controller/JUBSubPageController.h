@@ -1,5 +1,5 @@
 //
-//  JUBDetailBaseController.h
+//  JUBSubPageController.h
 //  JuBiterSDKDemo
 //
 //  Created by panmin on 2020/5/9.
@@ -11,22 +11,22 @@
 #import "JubSDKCore/JubSDKCore+DEV_BIO.h"
 #include "JUB_SDK_main.h"
 
-#import "JUBHomeController.h"
+#import "JUBHomePageController.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class JUBDetailBaseController;
-static JUBDetailBaseController *cSelf;
+@class JUBSubPageController;
+static JUBSubPageController *cSelf;
 
 int  BLEReadFuncCallBack(unsigned long int devHandle,  unsigned char* data, unsigned int dataLen);
 void BLEScanFuncCallBack(unsigned char* devName, unsigned char* uuid, unsigned int type);
 void BLEDiscFuncCallBack(unsigned char* uuid);
 
 
-@interface JUBDetailBaseController : JUBCoinTestDetailBaseController
+@interface JUBSubPageController : JUBDetailBaseController
 
-//@property (weak, nonatomic, readwrite) JUBDetailBaseController *selfClass;
+//@property (weak, nonatomic, readwrite) JUBSubPageController *selfClass;
 @property (nonatomic, nonatomic, readwrite) NSInteger optItem;
 
 @property (nonatomic, nonatomic, readwrite) long optCoinType;

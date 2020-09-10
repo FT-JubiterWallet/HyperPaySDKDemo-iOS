@@ -15,28 +15,27 @@
 //view
 #import "FTResultDataCell.h"
 #import "JUBAlertView.h"
-#import "JUBBLEDeviceListCell.h"
-#import "JUBBLEDeviceScanListView.h"
-#import "JUBBLEDisconnectView.h"
-#import "JUBCoinTestMainView.h"
+#import "JUBListCell.h"
+#import "JUBMainView.h"
 #import "JUBFingerEntryAlert.h"
 #import "JUBFingerManagerCell.h"
 #import "JUBInputAddressView.h"
 #import "JUBListAlert.h"
-#import "JUBPinAlertView.h"
-#import "JUBSelectApduView.h"
+#import "JUBPinAlert.h"
 #import "JUBWarningAlert.h"
-#import "JUBInputAlert.h"
+#import "JUBCustomInputAlert.h"
 
 //controller
-#import "JUBCoinTestDetailBaseController.h"
-#import "JUBCoinTestListBaseController.h"
+#import "JUBDetailBaseController.h"
+#import "JUBListBaseController.h"
 #import "JUBFingerManagerBaseController.h"
-#import "JUBNavigationController.h"
+#import "JUBInputOrderBaseController.h"
 
 //tool
 #import "Tools.h"
+#import "JUBAction.h"
 #import "FTConstant.h"
+#import "JUBOrderHistoryManager.h"
 
 
 //! Project version number for JuBiterSDKUI.

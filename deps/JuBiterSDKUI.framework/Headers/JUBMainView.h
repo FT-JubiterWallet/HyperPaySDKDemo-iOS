@@ -1,5 +1,5 @@
 //
-//  JUBCoinTestMainView.h
+//  JUBMainView.h
 //  JuBiterSDKDemo
 //
 //  Created by 张川 on 2020/4/8.
@@ -10,19 +10,19 @@
 #import "JUBButtonModel.h"
 #import "FTResultDataModel.h"
 
-typedef void (^JUBCoinTestMainViewCallBackBlock)(NSInteger index);
+typedef void (^JUBMainViewCallBackBlock)(NSInteger index);
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface JUBCoinTestMainView : UIView
+@interface JUBMainView : UIView
 
 @property (nonatomic, strong) NSArray<JUBButtonModel *> *buttonArray;;
 
-+ (JUBCoinTestMainView *)coinTestMainViewWithFrame:(CGRect)frame buttonArray:(nullable NSArray<JUBButtonModel *> *)btnArray;
++ (JUBMainView *)coinTestMainViewWithFrame:(CGRect)frame buttonArray:(nullable NSArray<JUBButtonModel *> *)btnArray;
 
 - (void)addMsgData:(NSString *)msgData;
 
-@property (nonatomic, strong) JUBCoinTestMainViewCallBackBlock transmissionViewCallBackBlock;
+@property (nonatomic, strong) JUBMainViewCallBackBlock transmissionViewCallBackBlock;
 
 @end
 

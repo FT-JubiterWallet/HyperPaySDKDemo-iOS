@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
 #import <JuBiterSDKUI/JuBiterSDKUI.h>
 
+#import "JubSDKCore/JubSDKCore+DEV.h"
 #import "JubSDKCore/JubSDKCore+DEV_BLE.h"
 #import "JubSDKCore/JubSDKCore+COIN_BTC.h"
 
@@ -42,13 +42,18 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, strong) NSString* userPin;
 @property (nonatomic, strong) NSString* neoPin;
+@property (nonatomic, strong) NSString* amount;
 @property (nonatomic, assign) JUB_NS_ENUM_VERIFY_MODE verifyMode;
 @property (nonatomic, assign) JUB_NS_ENUM_DEV_TYPE deviceType;
 @property (nonatomic, assign) JUB_NS_BTC_UNIT_TYPE coinUnit;
+@property (nonatomic, assign) JUB_NS_ENUM_COMMODE comMode;
+@property (nonatomic, assign) JUB_NS_ENUM_DEVICE  deviceClass;
 
 //@property (nonatomic, weak) UIViewController* selfClass;
 @property (nonatomic, strong) NSString*  currMainPath;
+@property (nonatomic, strong) BIP32Path* currPath;
 @property (nonatomic, assign) NSUInteger currCoinType;
+
 @property (nonatomic, assign) NSUInteger currDeviceID;
 @property (nonatomic, assign) NSUInteger currContextID;
 
