@@ -182,21 +182,22 @@
     
     [self addMsgData:[NSString stringWithFormat:@"Applets are %@.", appList]];
     
-/*
-    auto vAppList = split(appletList, ' ');
-    
-    for (auto appID : vAppList) {
-        char* version;
-        auto rv = JUB_GetAppletVersion(deviceID, (char*)appID.c_str(), &version);
+    for (auto appID : appList) {
+        if (NSComparisonResult::NSOrderedSame == [appID compare:[NSString stringWithCString:""
+                                                                                   encoding:[NSString defaultCStringEncoding]]]) {
+            continue;
+        }
+        auto version = [g_sdk JUB_GetAppletVersion:deviceID
+                                             appID:appID];
+        rv = [g_sdk lastError];
         if (JUBR_OK != rv) {
             [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAppletVersion return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
             return;
         }
         [self addMsgData:[NSString stringWithFormat:@"[JUB_GetAppletVersion() OK.]"]];
         
-        cout << appID << "Applet Version : " << version << endl;
+        [self addMsgData:[NSString stringWithFormat:@"Applet Version: %@.", version]];
     }
-*/
     
     NSString* coinList = [g_sdk Jub_EnumSupportCoins:deviceID];
     if (JUBR_OK != rv) {

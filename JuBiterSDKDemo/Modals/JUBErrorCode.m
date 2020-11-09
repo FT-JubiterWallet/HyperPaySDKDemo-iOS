@@ -7,6 +7,7 @@
 //
 
 #import "JUBErrorCode.h"
+//#import "JubSDKCore/JubSDKCore+DEV_BIO.h"
 
 @implementation JUBErrorCode
 
@@ -42,6 +43,11 @@
     case JUBR_OTHER_ERROR:          { errMsg = @"JUBR_OTHER_ERROR"; break; }
     case JUBR_CMD_ERROR:            { errMsg = @"JUBR_CMD_ERROR"; break; }
     case JUBR_BT_BOND_FAILED:       { errMsg = @"JUBR_BT_BOND_FAILED"; break; }
+    
+//    // JubSDKCore+DEV_BIO.h
+//    case JUBR_BIO_FINGERPRINT_MODALITY_ERROR:{ errMsg = @"JUBR_BIO_FINGERPRINT_MODALITY_ERROR"; break; }
+//    case JUBR_BIO_SPACE_LIMITATION: { errMsg = @"JUBR_BIO_SPACE_LIMITATION"; break; }
+//    case JUBR_BIO_TIMEOUT:          { errMsg = @"JUBR_BIO_TIMEOUT"; break; }
     
     default:                        { errMsg = @"UNKNOWN ERROR."; break; }
     }   // switch (rv) end

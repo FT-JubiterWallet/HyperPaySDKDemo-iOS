@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, JUB_NS_ENUM_FGPT_OPT) {
 
 
 #define BUTTON_TITLE_VIA_9GRIDS @"via 9 Grids"
-#define BUTTON_TITLE_VIA_FGPT   @"via fingerprint"
+//#define BUTTON_TITLE_VIA_FGPT   @"via fingerprint"
 
 
 typedef struct FgptEnrollResult {

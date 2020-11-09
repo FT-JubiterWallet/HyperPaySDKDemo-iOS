@@ -11,7 +11,6 @@
 #import <JuBiterSDKUI/JuBiterSDKUI.h>
 
 #import "JubSDKCore/JubSDKCore+DEV.h"
-#import "JubSDKCore/JubSDKCore+DEV_BLE.h"
 #import "JubSDKCore/JubSDKCore+COIN_BTC.h"
 
 
