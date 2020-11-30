@@ -50,6 +50,7 @@ typedef NS_ENUM(NSInteger, JUB_NS_ENUM_OPT) {
                 amount:(NSString*)amount
                   root:(Json::Value)root;
 
+- (NSUInteger)verify_user:(NSUInteger)contextID;
 - (NSUInteger)   show_virtualKeyboard:(NSUInteger)contextID;
 - (NSUInteger) cancel_virtualKeyboard:(NSUInteger)contextID;
 - (NSUInteger) verify_pin:(NSUInteger)contextID;

@@ -824,6 +824,10 @@ OutputBTC* JSON2OutputBTC(int i, Json::Value root) {
         }
         case JUB_NS_ENUM_OPT::TRANSACTION:
         {
+            if (JUBR_OK != [self verify_user:contextID]) {
+                break;
+            }
+            
             [self transaction_test:contextID
                             amount:[[JUBSharedData sharedInstance] amount]
                               root:root];
