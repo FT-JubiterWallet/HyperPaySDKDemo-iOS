@@ -182,7 +182,10 @@
     
     [self addMsgData:[NSString stringWithFormat:@"Applets are %@.", appList]];
     
-    for (auto appID : appList) {
+    auto vAppList = [[NSString stringWithCString:[appList UTF8String]
+                                        encoding:[NSString defaultCStringEncoding]]
+                     componentsSeparatedByString:@" "];
+    for (id appID : vAppList) {
         if (NSComparisonResult::NSOrderedSame == [appID compare:[NSString stringWithCString:""
                                                                                    encoding:[NSString defaultCStringEncoding]]]) {
             continue;
