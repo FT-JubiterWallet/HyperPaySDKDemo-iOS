@@ -128,6 +128,11 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
         [self CoinXRPOpt:deviceID];
         break;
     }
+    case JUB_NS_ENUM_MAIN::OPT_TRX:
+    {
+        [self CoinTRXOpt:deviceID];
+        break;
+    }
     default:
         break;
     }   // switch (data.optItem) end
@@ -163,5 +168,10 @@ void BLEDiscFuncCallBack(unsigned char* uuid) {
     
 }
 
+
+#pragma mark - TRX 通讯库寻卡回调
+- (void) CoinTRXOpt:(NSUInteger)deviceID {
+    
+}
 
 @end

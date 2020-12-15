@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		67155F1B258633B8006418B8 /* JUBTRXAmount.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67155F19258633B8006418B8 /* JUBTRXAmount.mm */; };
+		67155F1E258633FF006418B8 /* JUBTRXController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67155F1D258633FF006418B8 /* JUBTRXController.mm */; };
 		67158E582508D74F0073EFFB /* JUBSharedData.m in Sources */ = {isa = PBXBuildFile; fileRef = 67158E562508D74F0073EFFB /* JUBSharedData.m */; };
 		67158E692508D9CA0073EFFB /* JUBTimeOut.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67158E592508D9C90073EFFB /* JUBTimeOut.mm */; };
 		67158E6A2508D9CA0073EFFB /* JUBXRPAmount.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67158E5D2508D9C90073EFFB /* JUBXRPAmount.mm */; };
@@ -48,6 +50,11 @@
 		679C8D422559447C00BFCC7A /* JubSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 679C8D402559447C00BFCC7A /* JubSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		67A9DAD72574D3070007FFB2 /* testQTUM.json in Resources */ = {isa = PBXBuildFile; fileRef = 6774046824E4EF9200F358ED /* testQTUM.json */; };
 		67A9DAD82574D30D0007FFB2 /* testUSDT.json in Resources */ = {isa = PBXBuildFile; fileRef = 6774047224E4EF9200F358ED /* testUSDT.json */; };
+		67A9DAD92574D89E0007FFB2 /* testEOS_unstake.json in Resources */ = {isa = PBXBuildFile; fileRef = 6774047124E4EF9200F358ED /* testEOS_unstake.json */; };
+		67A9DADA2574D8A60007FFB2 /* testEOS_token.json in Resources */ = {isa = PBXBuildFile; fileRef = 67158E722509DD0A0073EFFB /* testEOS_token.json */; };
+		67B0326325889BC90070F716 /* testTRX.json in Resources */ = {isa = PBXBuildFile; fileRef = 67B0326225889BC90070F716 /* testTRX.json */; };
+		67B0326625889BE30070F716 /* testTRX_trc10.json in Resources */ = {isa = PBXBuildFile; fileRef = 67B0326425889BE30070F716 /* testTRX_trc10.json */; };
+		67B0326725889BE30070F716 /* testTRX_trc20.json in Resources */ = {isa = PBXBuildFile; fileRef = 67B0326525889BE30070F716 /* testTRX_trc20.json */; };
 		67CC31982466AB5800DDB9CD /* JUBETHController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC31962466AB5800DDB9CD /* JUBETHController.mm */; };
 		67CC319B2466AEE400DDB9CD /* JUBCoinController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC319A2466AEE400DDB9CD /* JUBCoinController.mm */; };
 		67CC31A12466BFEE00DDB9CD /* JUBSubPageController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 67CC31A02466BFEE00DDB9CD /* JUBSubPageController.mm */; };
@@ -74,6 +81,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		67155F19258633B8006418B8 /* JUBTRXAmount.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = JUBTRXAmount.mm; path = Modals/JUBTRXAmount.mm; sourceTree = "<group>"; };
+		67155F1A258633B8006418B8 /* JUBTRXAmount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JUBTRXAmount.h; path = Modals/JUBTRXAmount.h; sourceTree = "<group>"; };
+		67155F1C258633FF006418B8 /* JUBTRXController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBTRXController.h; sourceTree = "<group>"; };
+		67155F1D258633FF006418B8 /* JUBTRXController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBTRXController.mm; sourceTree = "<group>"; };
 		67158E562508D74F0073EFFB /* JUBSharedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JUBSharedData.m; path = Modals/JUBSharedData.m; sourceTree = "<group>"; };
 		67158E572508D74F0073EFFB /* JUBSharedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JUBSharedData.h; path = Modals/JUBSharedData.h; sourceTree = "<group>"; };
 		67158E592508D9C90073EFFB /* JUBTimeOut.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = JUBTimeOut.mm; path = Modals/JUBTimeOut.mm; sourceTree = "<group>"; };
@@ -135,6 +146,9 @@
 		679C7C4324F5F9CC0043FD50 /* JUBXRPController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBXRPController.mm; sourceTree = "<group>"; };
 		679C7C4424F5F9CC0043FD50 /* JUBXRPController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBXRPController.h; sourceTree = "<group>"; };
 		679C8D402559447C00BFCC7A /* JubSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JubSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67B0326225889BC90070F716 /* testTRX.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = testTRX.json; path = testJSONScript/testTRX.json; sourceTree = "<group>"; };
+		67B0326425889BE30070F716 /* testTRX_trc10.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = testTRX_trc10.json; path = testJSONScript/testTRX_trc10.json; sourceTree = "<group>"; };
+		67B0326525889BE30070F716 /* testTRX_trc20.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = testTRX_trc20.json; path = testJSONScript/testTRX_trc20.json; sourceTree = "<group>"; };
 		67CC31962466AB5800DDB9CD /* JUBETHController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JUBETHController.mm; sourceTree = "<group>"; };
 		67CC31972466AB5800DDB9CD /* JUBETHController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBETHController.h; sourceTree = "<group>"; };
 		67CC31992466AEE400DDB9CD /* JUBCoinController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JUBCoinController.h; sourceTree = "<group>"; };
@@ -175,16 +189,18 @@
 				67158E5E2508D9C90073EFFB /* JUBAmount.mm */,
 				67158E602508D9C90073EFFB /* JUBBTCAmount.h */,
 				67158E642508D9CA0073EFFB /* JUBBTCAmount.mm */,
-				67158E5C2508D9C90073EFFB /* JUBEOSAmount.h */,
-				67158E652508D9CA0073EFFB /* JUBEOSAmount.mm */,
 				67158E622508D9CA0073EFFB /* JUBETHAmount.h */,
 				67158E672508D9CA0073EFFB /* JUBETHAmount.mm */,
+				67158E5C2508D9C90073EFFB /* JUBEOSAmount.h */,
+				67158E652508D9CA0073EFFB /* JUBEOSAmount.mm */,
+				67158E632508D9CA0073EFFB /* JUBXRPAmount.h */,
+				67158E5D2508D9C90073EFFB /* JUBXRPAmount.mm */,
+				67155F1A258633B8006418B8 /* JUBTRXAmount.h */,
+				67155F19258633B8006418B8 /* JUBTRXAmount.mm */,
 				67158E5A2508D9C90073EFFB /* JUBRegEx.h */,
 				67158E5F2508D9C90073EFFB /* JUBRegEx.m */,
 				67158E682508D9CA0073EFFB /* JUBTimeOut.h */,
 				67158E592508D9C90073EFFB /* JUBTimeOut.mm */,
-				67158E632508D9CA0073EFFB /* JUBXRPAmount.h */,
-				67158E5D2508D9C90073EFFB /* JUBXRPAmount.mm */,
 				67158E572508D74F0073EFFB /* JUBSharedData.h */,
 				67158E562508D74F0073EFFB /* JUBSharedData.m */,
 				67158E5B2508D9C90073EFFB /* JUBErrorCode.h */,
@@ -256,6 +272,9 @@
 				6774047024E4EF9200F358ED /* testSeed.json */,
 				6774047224E4EF9200F358ED /* testUSDT.json */,
 				6774046924E4EF9200F358ED /* testXRP.json */,
+				67B0326225889BC90070F716 /* testTRX.json */,
+				67B0326425889BE30070F716 /* testTRX_trc10.json */,
+				67B0326525889BE30070F716 /* testTRX_trc20.json */,
 			);
 			name = testJSONScript;
 			sourceTree = "<group>";
@@ -292,6 +311,8 @@
 				679C7C4124F5286F0043FD50 /* JUBEOSController.mm */,
 				679C7C4424F5F9CC0043FD50 /* JUBXRPController.h */,
 				679C7C4324F5F9CC0043FD50 /* JUBXRPController.mm */,
+				67155F1C258633FF006418B8 /* JUBTRXController.h */,
+				67155F1D258633FF006418B8 /* JUBTRXController.mm */,
 			);
 			path = controller;
 			sourceTree = "<group>";
@@ -392,9 +413,12 @@
 			files = (
 				68B860F824239FEF0009F474 /* LaunchScreen.storyboard in Resources */,
 				8BE2A719235D89620015B9AB /* Assets.xcassets in Resources */,
+				67B0326325889BC90070F716 /* testTRX.json in Resources */,
 				6774048224E4EF9300F358ED /* testSeed.json in Resources */,
+				67B0326625889BE30070F716 /* testTRX_trc10.json in Resources */,
 				6774048824E4EF9300F358ED /* testMnemonic.json in Resources */,
 				6774047D24E4EF9300F358ED /* testBTC44.json in Resources */,
+				67A9DAD92574D89E0007FFB2 /* testEOS_unstake.json in Resources */,
 				6774047F24E4EF9300F358ED /* testBTC49.json in Resources */,
 				6774047824E4EF9300F358ED /* testLTC.json in Resources */,
 				6774048124E4EF9300F358ED /* testHCash.json in Resources */,
@@ -403,8 +427,10 @@
 				6774047924E4EF9300F358ED /* testEOS.json in Resources */,
 				67A9DAD82574D30D0007FFB2 /* testUSDT.json in Resources */,
 				6774048524E4EF9300F358ED /* testEOS_stake.json in Resources */,
+				67B0326725889BE30070F716 /* testTRX_trc20.json in Resources */,
 				67A9DAD72574D3070007FFB2 /* testQTUM.json in Resources */,
 				6774048624E4EF9300F358ED /* testEOS_sellram.json in Resources */,
+				67A9DADA2574D8A60007FFB2 /* testEOS_token.json in Resources */,
 				6774048924E4EF9300F358ED /* testEOS_buyram.json in Resources */,
 				6774047B24E4EF9300F358ED /* testXRP.json in Resources */,
 			);
@@ -435,9 +461,11 @@
 				687BCEDD245866BD00CD1780 /* JUBBTCController.mm in Sources */,
 				67CC31982466AB5800DDB9CD /* JUBETHController.mm in Sources */,
 				679C7C4224F5286F0043FD50 /* JUBEOSController.mm in Sources */,
+				67155F1B258633B8006418B8 /* JUBTRXAmount.mm in Sources */,
 				679C7C4524F5F9CD0043FD50 /* JUBXRPController.mm in Sources */,
 				67808E17245A7737009041FD /* JUB_SDK_main.cpp in Sources */,
 				67930AD4247E658D0041DBDF /* json_writer.cpp in Sources */,
+				67155F1E258633FF006418B8 /* JUBTRXController.mm in Sources */,
 				67930AD5247E658D0041DBDF /* json_reader.cpp in Sources */,
 				8BE2A70E235D89600015B9AB /* AppDelegate.m in Sources */,
 				8BE2A71F235D89620015B9AB /* main.m in Sources */,
@@ -582,7 +610,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/deps/jsoncpp/include",
 					"$(SRCROOT)",
-					"$(SRCROOT)/view",
+					"\"$(SRCROOT)/JuBiterSDKDemo/Modals\"",
 					"../HyperPay-Jub_SDK_CXX",
 				);
 				INFOPLIST_FILE = JuBiterSDKDemo/Info.plist;
@@ -625,7 +653,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/deps/jsoncpp/include",
 					"$(SRCROOT)",
-					"$(SRCROOT)/view",
+					"\"$(SRCROOT)/JuBiterSDKDemo/Modals\"",
 					"../HyperPay-Jub_SDK_CXX",
 				);
 				INFOPLIST_FILE = JuBiterSDKDemo/Info.plist;
