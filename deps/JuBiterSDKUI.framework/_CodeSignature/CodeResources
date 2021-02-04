@@ -42,7 +42,7 @@
 		</data>
 		<key>Headers/JUBFingerManagerBaseController.h</key>
 		<data>
-		+jwNQcxzUGpRb7WNaqMhxQbjBks=
+		Ra/WaUHYarKX7/xUrA0B1Xkj3s4=
 		</data>
 		<key>Headers/JUBFingerManagerCell.h</key>
 		<data>
@@ -94,7 +94,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		pW2kk+v1FNeSPT1ZFl4+dF9grv0=
+		dkrq10MMmV4AxEt4mckTMgYZh98=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -105,10 +105,6 @@
 	<dict>
 		<key>Headers/FTConstant.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			NBx3zHRUHhAHxf6KEAmWEiXA95M=
-			</data>
 			<key>hash2</key>
 			<data>
 			aDTKKt8kXqp/23hFm1Z7+vTSYgeQ26Vg9a+SoE1aHD8=
@@ -116,10 +112,6 @@
 		</dict>
 		<key>Headers/FTResultDataCell.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			X03TQDcx+HwlSsdedjXcBDFNofw=
-			</data>
 			<key>hash2</key>
 			<data>
 			fThHLF9/9SmPTAWFtcKUWqZWj7ndiuwfjWL3wycUtFI=
@@ -127,10 +119,6 @@
 		</dict>
 		<key>Headers/FTResultDataModel.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			rds4yd3xQCmvg++t2QnWb9cIsT8=
-			</data>
 			<key>hash2</key>
 			<data>
 			6/Wj70H6vyM2H5YuJljL2EFjJnlqhxkqoKCA+NAmfvA=
@@ -138,10 +126,6 @@
 		</dict>
 		<key>Headers/JUBAction.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			uMRZFqZXK/RrruHkvK7UsXYW+Tc=
-			</data>
 			<key>hash2</key>
 			<data>
 			QBQWw6ycY9W74cY/6DVVlxNQgsELOdxfwrSOFu/TD7g=
@@ -149,10 +133,6 @@
 		</dict>
 		<key>Headers/JUBAlertView.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			fWEv+oBbbe2uPEKlhRqmrVxqGmM=
-			</data>
 			<key>hash2</key>
 			<data>
 			D+oG4vos+9a9eOLSd7W/GRf6lRKHiksNFymwn1cEo5k=
@@ -160,10 +140,6 @@
 		</dict>
 		<key>Headers/JUBButtonModel.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			gqGn3mDdNtPdBJ233yprwkP7p9w=
-			</data>
 			<key>hash2</key>
 			<data>
 			F+56LPEh/h8Z3NpAP529AnxuOqcuFzt6b1FTvJ7alLQ=
@@ -171,10 +147,6 @@
 		</dict>
 		<key>Headers/JUBCustomInputAlert.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			TneiTNGrs4Matu8cm5G2AlF+FGU=
-			</data>
 			<key>hash2</key>
 			<data>
 			buCp0sv/G8mjBpqcedCa0tM07pUcej8NGLl/ilnCTx0=
@@ -182,10 +154,6 @@
 		</dict>
 		<key>Headers/JUBDetailBaseController.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			sHlsg1zJfKP+VDVVeoV2P7uZwlo=
-			</data>
 			<key>hash2</key>
 			<data>
 			aghWU+F8L9YxQSn4w7UB/1wsKalcM5ac9osuNIgeuFY=
@@ -193,10 +161,6 @@
 		</dict>
 		<key>Headers/JUBFingerEntryAlert.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			M5VfEW18t6NWZD4/k3m5bxgLcFw=
-			</data>
 			<key>hash2</key>
 			<data>
 			72wbvawYg+0EtCseN5ys+ROtchEhzAyOnrw3xv917tw=
@@ -204,21 +168,13 @@
 		</dict>
 		<key>Headers/JUBFingerManagerBaseController.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			+jwNQcxzUGpRb7WNaqMhxQbjBks=
-			</data>
 			<key>hash2</key>
 			<data>
-			n0LhZuVx0g77cBL1r0svLz3bUv7snTKph5uUzDuKEl8=
+			xY22pct3fAs6/W8TXc/vpdgTMA2SPSCyr7gYKYnrtyk=
 			</data>
 		</dict>
 		<key>Headers/JUBFingerManagerCell.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			4DlVhaUDTM0FXoW2JgNpyjVxIbQ=
-			</data>
 			<key>hash2</key>
 			<data>
 			j3EUm2Wv2Ba8lCgbZ+IO4iNX6cLGJBILr0YlKVlebNk=
@@ -226,10 +182,6 @@
 		</dict>
 		<key>Headers/JUBInputAddressView.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			YL8SfwiVR89YSguPSF3uJGRCwsE=
-			</data>
 			<key>hash2</key>
 			<data>
 			cSmUYPN4MSHjhjvfrjy9g64TinFK5juo2nmSrlYR4RE=
@@ -237,10 +189,6 @@
 		</dict>
 		<key>Headers/JUBInputOrderBaseController.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			LWVFxol77Djx9/wiTGPICcemJm8=
-			</data>
 			<key>hash2</key>
 			<data>
 			tClpou12WGHIhVeRBYHAlB/Oi8EpRud/1nPAhIgl/XU=
@@ -248,10 +196,6 @@
 		</dict>
 		<key>Headers/JUBListAlert.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Q73NLdiaGn/5ZEDkzTqUPUqdMWo=
-			</data>
 			<key>hash2</key>
 			<data>
 			hbRfBFNoTpf0c8kp+fdO9fuCotN27Zg/ZzMopY7WXMA=
@@ -259,10 +203,6 @@
 		</dict>
 		<key>Headers/JUBListBaseController.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			F+VnqT13C/ol9rUDUFZJT24SPCY=
-			</data>
 			<key>hash2</key>
 			<data>
 			EkoKMCUtUeZU2uMKSmhSTCN8yUtSjHdcyB6TMerFBYk=
@@ -270,10 +210,6 @@
 		</dict>
 		<key>Headers/JUBListCell.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			koMy/jdN1LnY1pD3BKM4O9KyDPU=
-			</data>
 			<key>hash2</key>
 			<data>
 			W/bHPTMGdERzpMN5Yrz1h1JuwtlIlEaVN9Rb/8tvCJw=
@@ -281,10 +217,6 @@
 		</dict>
 		<key>Headers/JUBMainView.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			EZzHiItJU3olPMZ1iODmRfECHRA=
-			</data>
 			<key>hash2</key>
 			<data>
 			zzsWGrzSGLpLKZ6UkypwEM1pq9ZkrtNyp2ztvwIdIYM=
@@ -292,10 +224,6 @@
 		</dict>
 		<key>Headers/JUBOrderHistoryManager.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			KZOVZFDdPqpM4mBlBnSkyBufX4k=
-			</data>
 			<key>hash2</key>
 			<data>
 			mTNZk9/ylCf2QobArukvGNlwXaapU8O1BRSm1SaHcps=
@@ -303,10 +231,6 @@
 		</dict>
 		<key>Headers/JUBPinAlert.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			Yp6ZCYNrLUnXIwQBFVyopX9vE9c=
-			</data>
 			<key>hash2</key>
 			<data>
 			lz07RrHNtNml391oLVBm8ccUPD4b4EmE6/GZ8DGh9ss=
@@ -314,10 +238,6 @@
 		</dict>
 		<key>Headers/JUBWarningAlert.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			dP/Upr1rV/T4cwSO1TxsfvkiMB8=
-			</data>
 			<key>hash2</key>
 			<data>
 			FNctAnxY2TZLsY2xHf2HVnaheOBkoJO+3/0SwPJoKVU=
@@ -325,10 +245,6 @@
 		</dict>
 		<key>Headers/JuBiterSDKUI.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			VyNpXzrXMFVqR9yNZn+dRM5mk30=
-			</data>
 			<key>hash2</key>
 			<data>
 			XZk1Tb+QdCAHX72uM995T/UMT5onmRpjj7BAyg89pIk=
@@ -336,10 +252,6 @@
 		</dict>
 		<key>Headers/Tools.h</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			NqVQUyw9aO4mG4XNGVGycWjTraw=
-			</data>
 			<key>hash2</key>
 			<data>
 			DF4Hyl8UmwWp4bwJ7hG3BwGJ7Q6LkxJPVkDxiKxsS88=
@@ -347,10 +259,6 @@
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
-			<key>hash</key>
-			<data>
-			LNf6UfwFG9NRvqaOV6XEJ64AEWc=
-			</data>
 			<key>hash2</key>
 			<data>
 			/ZNAcQUAppc0fob50rIi3W5n8eS6WrWk0A7ahU90rJI=

@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 //此值为非空值时导航栏右边的按钮将会显示该值，并且点击可以切换单位
 @property (nonatomic, copy) NSString *navRightButtonTitle;
 
+//设置timeout的时间
+@property (nonatomic, assign) NSInteger timeOut;
+
 - (void)addMsgData:(NSString *)msgData;
 
 @end

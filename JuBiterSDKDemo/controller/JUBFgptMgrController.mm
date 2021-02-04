@@ -26,6 +26,8 @@
     self.title = @"Fingerprint Management";
     
     self.navRightButtonTitle = @"Verify";
+    
+    self.timeOut = 20;
 }
 
 
@@ -238,6 +240,38 @@
 }
 
 
+// Fingerprint timeout setting
+- (void)timeOutEntry {
+    
+    JUBCustomInputAlert *customInputAlert = [JUBCustomInputAlert showCallBack:^(NSString * _Nonnull timeout,
+                                                                                JUBDissAlertCallBack  _Nonnull dissAlertCallBack,
+                                                                                JUBSetErrorCallBack  _Nonnull setErrorCallBack) {
+        
+        NSLog(@"content = %@", timeout);
+        if (nil == timeout) {
+            dissAlertCallBack();
+        }
+        else if (   [timeout integerValue] >=  8
+                 && [timeout integerValue] <= 60
+                 ) {
+            //隐藏弹框
+            dissAlertCallBack();
+            
+            self.timeOut = [timeout integerValue];
+            
+        }
+        else {
+            setErrorCallBack(@"The maximum fingerprint timeout is 60s.");
+        }
+    }
+                                                                 keyboardType:UIKeyboardTypeDecimalPad];
+    
+    customInputAlert.message = @"Please input the timeout (8 ~ 60s):";
+    
+    customInputAlert.title = @"The fingerprint operation timeout setting";
+}
+
+
 - (NSUInteger) enum_fgpt_test:(NSUInteger)deviceID {
     
     NSUInteger rv = JUBR_ERROR;
@@ -264,13 +298,12 @@
                                fgptID:(NSUInteger)fgptID {
     
     NSUInteger rv = JUBR_ERROR;
-    NSUInteger fgptTimeout = 60;
     
     NSUInteger fgptNextIndex = fgptIndex;
 //    NSUInteger remainingTimes = times;
     NSUInteger assignedID = fgptID;
     FgptEnrollInfo info = [g_sdk JUB_EnrollFingerprint:deviceID
-                                           fgptTimeout:fgptTimeout
+                                           fgptTimeout:self.timeOut
                                              fgptIndex:fgptNextIndex
                                                 fgptID:assignedID];
     rv = [g_sdk lastError];
@@ -289,10 +322,9 @@
 - (NSUInteger) erase_fgpt_test:(NSUInteger)deviceID {
     
     NSUInteger rv = JUBR_ERROR;
-    NSUInteger fgptTimeout = 60;
     
     [g_sdk JUB_EraseFingerprint:deviceID
-                    fgptTimeout:fgptTimeout];
+                    fgptTimeout:self.timeOut];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
         [self addMsgData:[NSString stringWithFormat:@"[JUB_EraseFingerprint() return %@ (0x%2lx).]", [JUBErrorCode GetErrMsg:rv], rv]];
@@ -308,10 +340,9 @@
                          fgptID:(NSUInteger)fgptID {
     
     NSUInteger rv = JUBR_ERROR;
-    NSUInteger fgptTimeout = 60;
     
     [g_sdk JUB_DeleteFingerprint:deviceID
-                     fgptTimeout:fgptTimeout
+                     fgptTimeout:self.timeOut
                           fgptID:fgptID];
     rv = [g_sdk lastError];
     if (JUBR_OK != rv) {
